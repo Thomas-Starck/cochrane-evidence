@@ -10,7 +10,7 @@ project:
     - "!renv.lock"
 
 website:
-  title: "cochrane-updates"
+  title: "cochrane-evidence"
   navbar:
     left:
       - text: "Home"

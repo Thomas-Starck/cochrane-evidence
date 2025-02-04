@@ -1,0 +1,10 @@
+---
+title: "Home"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=F, message=F, results=F, dev='svg')
+```
+
+
+This is a project attempting to analyze the evolution of the "certainty of evidence" of outcomes assessed in Cochrane library.

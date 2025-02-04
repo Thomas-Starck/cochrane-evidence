@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: docs
+  render: 
+    - "index.qmd"
+    - "cochrane_updates.qmd"
+    - "database_analysis.qmd"
+    - "!source"
+    - "!output"
+    - "!renv.lock"
+
+website:
+  title: "cochrane-updates"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
+      - text: "Gather data"
+        href: cochrane_updates.qmd
+      - text: "Analyze data"
+        href: database_analysis.qmd
+ 
+    right:
+      - icon: github
+        href: https://
+
+format:
+  html:
+    theme: 
+      light: flatly
+      dark: darkly
+    toc: true
+    code-fold: true
+    toc_float: true
+
+

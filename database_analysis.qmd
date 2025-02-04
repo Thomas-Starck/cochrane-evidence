@@ -1,0 +1,1156 @@
+---
+title: "Database Analysis"
+format: html
+---
+
+IDEE: on peut regarder versions qui ont changé de titre, d'auteurs...
+
+IDEE: temps entre 1er protocole et 1ere version
+
+histogramme year of first publication vs histrogramm year of last update
+
+
+```{r setup, include=T, warning=F, message=F, results=F}
+knitr::opts_chunk$set(warning=F, message=F, results=F, fig.align = "center",  dev='svg')
+# Load the function file
+source("functions.R")
+#included:
+#-function to save csv f_save_csv_files
+#-set the default scale_color and scale_fill to viridis theme
+#-loads the core tidyverse package
+
+library(patchwork) # for multiple graphs with ggplot
+library(ggbeeswarm)  # For geom_quasirandom
+
+# Set theme for graphs
+theme_set(
+  theme_classic() +
+  theme(
+    panel.grid.major.y = element_line(), #no vertical lines by default
+    #text = element_text(family = "Times New Roman"), #default font
+    plot.title = element_text(face="bold") #graphs titles in bolds
+    )
+  )
+```
+
+
+```{r load_data}
+# Load the original downloaded database of cochrane systematic reviews on interventions
+# gives the latest published version of each SR
+cochrane_dataset <- read.csv("source_data/cochrane_data_base_2025_01_22/review_type/SR_Interventions.csv")
+
+# database of all versions, not only the latest one
+versions <- read_csv("output_data/versions/SR_versions.csv")
+
+# only keep versions that are not protocols
+versions_without_protocols <- versions %>% 
+  filter(version_stage!="Protocol")
+
+# database of all version with also detailed updates events
+versions_with_events <- read_csv("output_data/versions/SR_versions_with_events.csv")
+versions_with_events$Published <- as.Date(versions_with_events$Published, format = "%Y %b %d") # Transform date string to a date object
+```
+
+# Analysis of versions
+
+```{r}
+cat(length(unique(versions$DOI.unique)), "unique Systematic Reviews")
+cat(nrow(unique(versions %>% filter(version_stage=="Protocol"))), "Systematic Reviews with a protocol")
+
+cat(nrow(versions), "unique versions (including protocols)")
+cat(nrow(versions_without_protocols), "unique versions (excluding protocols)")
+```
+
+## Latest published version
+
+There are almost 9,000 systematic reviews in the database. Of these, for a bit more than half (55%, or 5,000 reviews), the latest version is Version 1. So we can only study the evolution of the certainty of evidence on the remaining ~4,000 reviews, which have at least 2 distinct versions..
+
+```{r plot_latest_version}
+# get only latest version for each systematic review
+DOIs_latest <- unique(cochrane_dataset$DOI)
+
+versions_without_protocols %>% 
+  filter(Version %in% paste0("https://doi.org/", DOIs_latest)) %>%
+  count(version_stage) %>%  # Count occurrences for each version_stage
+  mutate(percentage = n / sum(n) * 100) %>%  # Calculate percentage for each version_stage
+  ggplot(aes(x = version_stage, y = n, fill = version_stage)) +
+  geom_bar(stat = "identity", alpha=.9) +
+  geom_text(aes(label = paste0(n, "\n(", round(percentage, 1), "%)")), vjust = -0.5) +  # Add text labels with count and percentage
+  theme(legend.position = "none") +
+  labs(
+    title = paste0("Latest version of Cochrane Systematic Reviews (", nrow(cochrane_dataset), " reviews)"),
+    subtitle = "read: for ~5000 reviews, the latest published version is version 1",
+    x = "latest version",
+    y = "number of\nSystematic Reviews"
+  ) +
+  scale_y_continuous(limits = c(0, 6000), breaks=seq(0, 6000, 1000))
+
+
+```
+
+## Time between versions updates
+
+Here is plotted the distribution of time span before a systematic review update.
+
+TBD: REGLER PRBLEME DES 0, ET ECRIRE V1 TO V2, V2 TO V3...
+
+```{r prepare_duration_between_2_updates}
+ #Calculate duration between consecutive version stages for each DOI.unique
+versions_duration <- versions_without_protocols %>%
+  # Arrange the data by DOI.unique and Published date
+  arrange(DOI.unique, Published) %>%
+  # Group by DOI.unique to calculate version durations per DOI
+  group_by(DOI.unique) %>%
+  # Create a new column for version stages: lag of 'Stage' and 'Published'
+  mutate(
+    previous_version = lag(version_stage),         # Previous version stage
+    previous_date = lag(Published),                # Previous version date
+    duration_years = as.numeric(interval(previous_date, Published) / years(1))  # Duration in years
+  ) %>%
+  # Filter rows where the version is not the first (since no previous version exists for V1)
+  filter(!is.na(previous_version)) %>%
+  select(DOI.unique, version_stage, previous_version, duration_years)
+
+
+# View the result
+glimpse(versions_duration)
+```
+
+```{r plot_time_update}
+# Plot of the duration between any 2 versions
+ggplot(
+  data = versions_duration, 
+  aes(y = duration_years, x = as.factor(""))
+) +
+  # Quasirandom points (jittered for better visibility)
+  geom_quasirandom(
+    alpha = 0.1
+  ) +
+  # Boxplot (basic, no weights)
+  geom_boxplot(
+    color = "black",
+    width = 0.3,
+    outlier.shape = NA,
+  ) +
+  # Labels and theme
+  labs(
+    title = "Distribution of Duration between 2 versions", 
+    subtitle = "Each dot represents one duration between 2 versions; boxplot shows the distribution.",
+    x = "", 
+    y = "Duration before an upadate\n(Years)",
+    caption = ""
+  ) +
+  scale_fill_viridis_d() +
+  scale_color_viridis_d() +
+  coord_flip() 
+```
+
+```{r plot_time_update_by_version}
+# Plot of the duration between specific versions (V1/V2, V3/V4///)
+ggplot(
+  data = versions_duration, 
+  aes(y = duration_years, x = version_stage)
+) +
+  # Quasirandom points (jittered for better visibility)
+  geom_quasirandom(
+    aes(color = version_stage),
+    alpha = 0.3
+  ) +
+  # Boxplot (basic, no weights)
+  geom_boxplot(
+    aes(fill = version_stage),
+    color = "black",
+    width = 0.3,
+    outlier.shape = NA,
+  ) +
+  # Labels and theme
+  labs(
+    title = "Distribution of Duration by Version Stage", 
+    subtitle = "Each dot represents one observation, and boxplot shows the distribution.",
+    x = "", 
+    y = "Duration before an upadate\n(Years)",
+    caption = ""
+  ) +
+  scale_fill_viridis_d() +
+  scale_color_viridis_d() +
+  coord_flip() +
+  theme(axis.title.y = element_blank(), legend.position = "none")
+```
+
+
+# Plain Language Summary
+
+<!-- NAs => withdrawn ? Croiser avec cexu que j'ai identifiés comme withdrawn -->
+
+```{r}
+# Load scrapped Plain Language Summaries contents
+df_plain_language_summary <- read_csv("output_data/plain_language_summary/SR_plain_language_summary.csv")
+nrow(df_plain_language_summary)
+
+# See reviews versions without a plain language summary
+temp <- df_plain_language_summary %>%
+  filter(is.na(plain_languag_summary))
+nrow(temp)
+
+# Percent reviews without a plain language summary
+cat(round(100*nrow(temp)/nrow(df_plain_language_summary), 1),"% reviews without plain language summary")
+```
+
+There are `r nrow(temp)` unique versions (out of a total of `r nrow(df_plain_language_summary)`, or about `r round(100*nrow(temp)/nrow(df_plain_language_summary), 1)`%) that do not have any plain language summary. Normally, for all these reviews versions the underlying reason should be that they have been withdrawn.
+
+Below is the temporal evolution:
+
+```{r}
+# Prepare data to see evolution of presence of PLS through time
+df_plot <- df_plain_language_summary %>%
+  mutate(
+    year = year(Published),
+    PLS_status = ifelse(is.na(plain_languag_summary), "No", "Yes")
+    ) %>%
+  group_by(year, PLS_status) %>%
+  summarise(n = n(), .groups = "drop")
+
+# We want the "No" below the "Yes", so we order the values
+df_plot$PLS_status <- factor(df_plot$PLS_status, levels = c("Yes", "No"))
+
+# Plot absolute
+g1 <- ggplot(df_plot, aes(x = year, y = n, fill = PLS_status)) +
+  geom_col(position = "stack", alpha=.8) +
+  labs(
+    title = NULL, x = NULL, y=NULL, 
+    subtitle = "absolute number of versions published that year", 
+    fill = "Plain Language\nSummary?"
+    ) 
+
+# Plot relative
+g2 <- ggplot(df_plot, aes(x = year, y = n, fill = PLS_status)) +
+  geom_col(position = "fill", alpha = 0.8) +
+  scale_y_continuous(
+    breaks = seq(0, 1, .2),
+    labels = scales::percent_format()
+    ) +
+  labs(
+    title = NULL, x = NULL, y = NULL, 
+    subtitle = "share of versions that year",
+    fill = "Plain Language\nSummary?"
+    ) 
+
+
+g1 / g2 + plot_layout(guides = "collect") & 
+  plot_annotation(title = "Published versions (by year) containing a Plain Language Summary")
+```
+
+
+# Summary of Findings - Metadata
+
+```{r}
+df_SOF <- read_csv("output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv")
+nrow(df_SOF)
+
+# How many reviews versions without Summary of Findings section
+temp <- df_SOF %>% filter(SOM_html_string=="No summary of Findings")
+nrow(temp)
+
+cat(round(100*nrow(temp)/nrow(df_SOF)), "% versions without a Summary of Findings section.")
+```
+
+There are `r nrow(temp)` unique versions (out of a total of `r nrow(df_SOF)`, or about `r round(100*nrow(temp)/nrow(df_SOF), 1)`%) that do not have any Summary of Findings section. 
+
+```{r}
+# No focus on reviews with a Summary of Findings Section
+versions_with_SOM <- df_SOF %>% filter(SOM_html_string!="No summary of Findings")
+nrow(versions_with_SOM)
+
+# Among these reviews with a SoF section, none doe not have an html table (ucomment to see that test is empty)
+# test <- versions_with_SOM %>%
+#   filter(!grepl("<table", SOM_html_string, ignore.case = TRUE))
+```
+
+Below is the evolution through time of the presenece of a Summary of Findings section (the presence of SoF before 2008 shows errors in the historic of versions Publication dates, as Summary of Findings were introduced only in 2008).
+
+```{r}
+# Prepare data to see evolution of presence of SoF through time
+df_plot <- left_join(versions_without_protocols, df_SOF, by="Version")  %>%
+  mutate(
+    SOF_status = ifelse(SOM_html_string == "No summary of Findings", "No", "Yes"),
+    year = year(Published)
+    ) %>%
+  group_by(year, SOF_status) %>%
+  summarise(n = n(), .groups = "drop")
+
+
+# We want the "No" below the "Yes", so we order the values
+df_plot$SOF_status <- factor(df_plot$SOF_status, levels = c("Yes", "No"))
+
+# Plot absolute
+g1 <- ggplot(df_plot, aes(x = year, y = n, fill = SOF_status)) +
+  geom_col(position = "stack", alpha=.8) +
+  labs(
+    title = NULL, x = NULL, y=NULL, 
+    subtitle = "absolute number of versions published that year", 
+    fill = "Summary of\nFindings?"
+    ) 
+
+# Plot relative
+g2 <- ggplot(df_plot, aes(x = year, y = n, fill = SOF_status)) +
+  geom_col(position = "fill", alpha = 0.8) +
+  scale_y_continuous(
+    breaks = seq(0, 1, .2),
+    labels = scales::percent_format()
+    ) +
+  labs(
+    title = NULL, x = NULL, y = NULL, 
+    subtitle = "share of versions that year",
+    fill = "Summary of\nFindings?"
+    ) 
+
+
+g1 / g2 + plot_layout(guides = "collect") & 
+  plot_annotation(title = "Published versions (by year) containing a Summary of Findings")
+```
+
+
+Distribution of the number of summary of findings tables in a single review version
+
+```{r}
+temp <- versions_with_SOM %>%
+  mutate(count_nb_tables = str_count(SOM_html_string, regex("<table", ignore_case = TRUE)))
+
+# total nb of tables
+sum(temp$count_nb_tables)
+
+# Plot of nb of tables by version distribution
+ggplot(temp) +
+  geom_bar(aes(count_nb_tables)) +
+  labs(
+    title = "Distribution of the number of SOF tables in a single review version",
+    y="number of review versions concerned",
+    x="number of tables in 1 review version"
+    )
+```
+
+
+# Summary of Findings - Content
+
+
+<!-- TBD: -->
+<!-- -voir si les doublons -->
+<!-- -check the ones which where problematic et refaire trouner en changeant prompt ? -->
+<!-- -version "https://doi.org/10.1002/14651858.CD013303.pub2" 140814 tokens, too big for the 128 000 tokens context -->
+
+
+```{r}
+# Load and have a quick look at the data extracted from the SOF tables by chatgpt
+csv_file <- "output_data/summary_of_findings/SR_SOF_confidence.csv"
+SOF_tables_content <- read_csv(csv_file)
+glimpse(SOF_tables_content)
+
+# create a column year, based on publication date
+SOF_tables_content$year <- year(SOF_tables_content$Published)
+
+# The certainty of evidence: should only be "high", "moderate", "low", "very low", NA, and "unable to attribute"
+table(SOF_tables_content$certainty_of_evidence)
+sort(unique(SOF_tables_content$certainty_of_evidence))
+
+# First, correct values that are almost right (just an upper case mistake) and slightly rename
+SOF_tables_content <- SOF_tables_content %>%
+  mutate(
+    certainty_of_evidence = case_when(
+      certainty_of_evidence == "High" ~ "high",
+      certainty_of_evidence == "Low" ~ "low",
+      certainty_of_evidence == "Moderate" ~ "moderate",
+      certainty_of_evidence %in% c("Very low", "Very Low", "very Low") ~ "very low",
+      is.na(certainty_of_evidence) ~ "outcome not reported",
+      certainty_of_evidence == "unable to attribute" ~ "chatgpt unable to attribute",
+      T~certainty_of_evidence
+      )
+    )
+
+# Now, for all the ones not in the correct possible values, attribute them to "incorrect formatting by chatgpt"
+correct_values <- c("high", "moderate", "low", "very low", "outcome not reported", "chatgpt unable to attribute")
+SOF_tables_content <- SOF_tables_content %>%
+  mutate(
+    certainty_of_evidence = case_when(
+      !(certainty_of_evidence %in% correct_values) ~ "incorrect formatting by chatgpt",
+      T ~ certainty_of_evidence
+      )
+    )
+
+# Have a look at the cases where the formatting is incorrect
+SOF_tables_content_incorrect_format <- SOF_tables_content %>%
+  filter(certainty_of_evidence=="incorrect formatting by chatgpt")
+length(unique(SOF_tables_content_incorrect_format$Version)) #only 42 versions with incorrect formatting
+
+# Remove incorrect formatting from main file for analysis
+SOF_tables_content <- SOF_tables_content %>%
+  filter(certainty_of_evidence!="incorrect formatting by chatgpt")
+
+# order the values
+SOF_tables_content$certainty_of_evidence <- factor(
+  SOF_tables_content$certainty_of_evidence,
+  levels = c(
+    "chatgpt unable to attribute", 
+    "outcome not reported", 
+    "very low", "low", "moderate", "high"
+  )
+)
+```
+
+
+Evolution of the certainty of evidence
+
+```{r}
+
+g1 <- ggplot(SOF_tables_content) +
+  geom_bar(aes(year, fill=certainty_of_evidence), stat="count") +
+  labs(x=NULL, y="number of outcomes", fill="outcome\ncertainty of\nevidence") +
+  scale_x_continuous(limits = c(2008, 2024))
+g2 <- ggplot(SOF_tables_content) +
+  geom_bar(aes(year, fill=certainty_of_evidence), position = "fill") +
+  labs(x=NULL, y=NULL, fill="outcome\ncertainty of\nevidence") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(limits = c(2008, 2024))
+g1 / g2 +
+  plot_layout(guides="collect") &
+  plot_annotation(
+    title = "Certainty of evidence in Cochrane Database of Systematic Reviews",
+    subtitle = "for outcomes evaluated in the Summary Of Findings tables"
+    )
+
+
+```
+
+
+Focusing only on when certainty of evidence is reported
+
+```{r}
+
+g1 <- ggplot(SOF_tables_content %>% filter(certainty_of_evidence %in% c("high", "moderate", "low", "very low"))) +
+  geom_bar(aes(year, fill=certainty_of_evidence), stat="count") +
+  labs(x=NULL, y="number of outcomes", fill="outcome\ncertainty of\nevidence") +
+  scale_x_continuous(limits = c(2009, 2025))
+g2 <- ggplot(SOF_tables_content %>% filter(certainty_of_evidence %in% c("high", "moderate", "low", "very low"))) +
+  geom_bar(aes(year, fill=certainty_of_evidence), position = "fill") +
+  labs(x=NULL, y=NULL, fill="outcome\ncertainty of\nevidence") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(limits = c(2009, 2025))
+g1 / g2 +
+  plot_layout(guides="collect") &
+  plot_annotation(
+    title = "Certainty of evidence in Cochrane Database of Systematic Reviews",
+    subtitle = "for outcomes evaluated in the Summary Of Findings tables"
+    )
+```
+
+Same but normalizing by the number of outcomes reported in 1 version (beause some systematic reviews report many outcomes that are very similar)
+
+```{r}
+temp <- SOF_tables_content %>% 
+  filter(certainty_of_evidence %in% c("high", "moderate", "low", "very low")) %>%
+  group_by(Version) %>%
+  mutate(nb_outcomes_version = n())
+
+g1 <- ggplot(temp) +
+  geom_bar(aes(x = year, fill = certainty_of_evidence, weight = 1/nb_outcomes_version)) +
+  labs(x=NULL, y="number of outcomes", fill="outcome\ncertainty of\nevidence") +
+  scale_x_continuous(limits = c(2009, 2025))
+g2 <- ggplot(temp) +
+  geom_bar(aes(x = year, fill = certainty_of_evidence, weight = 1/nb_outcomes_version), position = "fill") +
+  labs(x=NULL, y=NULL, fill="outcome\ncertainty of\nevidence") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(limits = c(2009, 2025))
+g1 / g2 +
+  plot_layout(guides="collect") &
+  plot_annotation(
+    title = "Certainty of evidence in Cochrane Database of Systematic Reviews",
+    subtitle = "for outcomes evaluated in the Summary Of Findings tables"
+    )
+```
+
+
+
+
+
+
+
+
+<!-- # TBF Abstracts -->
+
+<!-- 512 versions are labelled as withdrawn (their abstract title is "Reason for withdrawal from publication") -->
+
+<!-- Composition of the abstracts in Cochrane systematic reviews. -->
+
+<!-- Once withdrawn versions removed (n=512), the 2 remaining outliers sections are: -->
+
+<!-- -Unnamed (n=20): mostly protcols not correctly intexed (n=15 begin with "There is no abstract. The objectives are as follows:"); for the 5 others, simply additional paragraph stating something about past or future review update. CHOIX A FAIRE SUR LES 15 "there is no abastract" -->
+
+<!-- Test when there is no "author's conclusion" -->
+
+<!-- environ 520 cochrane reviews "withdrawn" (3%) => faire une typologie des raisons ? -->
+
+<!-- ATTENTION: can withdrawn, enelver aussi les anciennces versions ? ex ici une V2 withdrawn et qui renvoie vers une nouvelle revue, mais la V1 n'est pas withdrawn => https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD000056.pub2/information#versionTable -->
+
+<!-- A FAIRE: COMBINER ENSEMBLE LES SECTIONS POUR FAIRE UN CSV DES ABSTARCTS BRUTS SR_abstracts.csv -->
+<!-- - -->
+
+<!-- ```{r} -->
+<!-- # Load scrapped abstracts content -->
+<!-- df_abstracts <- read_csv("output_data/abstracts/SR_abstracts_with_sections.csv") -->
+
+<!-- # Versions that have been withdrawn n = 157 -->
+<!-- df_abstracts_withdrawn <- df_abstracts %>% -->
+<!--   filter(Abstract_title == "Reason for withdrawal from publication") -->
+<!-- glimpse(df_abstracts_withdrawn) -->
+
+<!-- # Abstracts without withdrawn sections -->
+<!-- df_abstracts <- df_abstracts %>% -->
+<!--   filter(Abstract_title != "Reason for withdrawal from publication") -->
+
+<!-- # Define known section names and their order -->
+<!-- known_sections <- c( -->
+<!--   "Background", "Objectives", "Search methods", "Selection criteria", -->
+<!--   "Data collection and analysis", "Main results", "Authors' conclusions", -->
+<!--   "Unnamed Section" -->
+<!-- ) -->
+
+<!-- df_abstracts <- df_abstracts %>% -->
+
+<!--   # 1. Create a simplified section factor -->
+<!--   mutate( -->
+<!--     section_simplified = if_else(Section %in% known_sections, Section, "Others"), -->
+<!--     section_simplified = factor(section_simplified, levels = c(known_sections, "Others")) -->
+<!--   ) -->
+
+<!-- # 2. Count sections, compute percentages, and create custom labels -->
+<!-- section_counts <- df_abstracts %>% -->
+<!--   count(section_simplified) %>% -->
+<!--   mutate( -->
+<!--     percentage = round(100 * n / nb_versions_without_protocols, 1), -->
+<!--     label = paste0(section_simplified, "\n(n=", n, ", ", percentage, "%)") -->
+<!--   ) -->
+
+<!-- # 3. Join labels back to the main dataset, ensuring correct factor order -->
+<!-- df_abstracts <- df_abstracts %>% -->
+<!--   left_join(select(section_counts, section_simplified, label), by = "section_simplified") %>% -->
+<!--   mutate(label = factor(label, levels = section_counts$label)) -->
+
+<!-- # Quick check -->
+<!-- glimpse(df_abstracts) -->
+
+<!-- # 4. Plot -->
+<!-- ggplot(df_abstracts, aes(fct_rev(label))) + -->
+<!--   geom_bar() + -->
+<!--   geom_hline(yintercept = nb_versions_without_protocols, linetype = "dashed") + -->
+<!--   ylim(c(0, 16000)) + -->
+<!--   annotate( -->
+<!--     geom = "text", y = nb_versions_without_protocols - 100, x = 1.5, hjust = 1, fontface = "italic", -->
+<!--     label = paste0(nb_versions_without_protocols, " unique versions in total,\nfrom ", nb_systematic_reviews, " unique systematic reviews") -->
+<!--   ) + -->
+<!--   coord_flip() + -->
+<!--   labs( -->
+<!--     x = NULL, -->
+<!--     y = "Number of versions containing the paragraph", -->
+<!--     title = "Paragraphs within the versions' abstracts (excluding protocols)" -->
+<!--   ) -->
+
+<!-- ``` -->
+
+<!-- Content sections of "Others" -->
+
+<!-- ```{r} -->
+<!-- temp <- df_abstracts %>% filter(section_simplified=="Others") %>% pull(Section) -->
+<!-- table(temp) -->
+<!-- ``` -->
+
+<!-- QUAND LEURS SECTIONS RENOMMEES, REFAIRE PLOT AVEC WITHDRAWN ET HIDDEN PROTOCOLS ? -->
+
+<!-- REANALYSER AVEC MA NOUVELLE SECTION ABSTRACT TITLE -->
+
+<!-- CORRIGER LE COUNT: PRENDRE UNIQUE DOI, ENLEVER DUPLICATES (OK ?) -->
+
+<!-- AUSSI POUR UNNAMED SECTIONS VOIR SI BIEN 1 SEUL DOI A CHAQUE FOIS (OK ?) -->
+
+<!-- Analysis of "Unnamed Sections" -->
+
+<!-- ```{r} -->
+<!-- # Versions which have unnamed paragraphs -->
+<!-- temp <- df_abstracts %>% -->
+<!--   filter(Section == "Unnamed Section") -->
+<!-- nrow(temp) -->
+
+<!-- # To see versions which have an unnamed section but also other sections -->
+<!-- # Only 3 in that case out of more than 500 -->
+<!-- temp2 <- temp %>% -->
+<!--   group_by(Version) %>% -->
+<!--   summarise(Count = n()) -->
+<!-- nrow(temp2) -->
+
+
+<!-- # How many of the versions with Unnamed sections do not contain "withdr" (for withdrawn) -->
+<!-- # Only 29 out of more than 500 -->
+<!-- # mostly reasons -->
+<!-- test <- temp %>% -->
+<!--   filter(!grepl("withdr", Text, ignore.case = TRUE)) -->
+<!-- nrow(test) -->
+<!-- # Ceux qui sont "there is no abstract" => ressemblent à des protocoles (mais leur titre est quand même "Abstract") -->
+<!-- ``` -->
+
+<!-- There are `r nrow(temp)` unique versions (out of a total of `r nrow(df_abstracts)`, or about `r round(100*nrow(temp)/nrow(df_abstracts), 1)`%) that do not have any plain language summary. Normally, for all these reviews versions the underlying reason should be that they have been withdrawn. -->
+
+<!-- 2 versions with some sections but no text within (1 withdrawn and 1 just empty) -->
+
+<!-- ```{r} -->
+<!-- temp <- df_abstracts %>% filter(is.na(Text)) -->
+<!-- ``` -->
+
+
+<!-- Analysis of "other sections -->
+
+<!-- ```{r} -->
+<!-- temp <- df_abstracts %>% filter(section_simplified == "Others") -->
+<!-- unique(temp$Section) -->
+<!-- ``` -->
+
+
+
+<!-- Old analysis -->
+
+
+
+<!-- ```{r} -->
+<!-- # Abstract which contain "Authors' conclusions" or "Reviewer's conclusions" -->
+<!-- temp <- processed_data %>% filter( -->
+<!--   grepl("Authors' conclusions|Reviewer's conclusions", Section, ignore.case = TRUE) -->
+<!-- ) -->
+<!-- length(unique(temp$DOI.unique))/length(unique(processed_data$DOI.unique)) -->
+
+<!-- # to check if some reviews have both terms +> empty, OK -->
+<!-- test <- processed_data %>% filter( -->
+<!--     grepl("Authors' conclusions", Section, ignore.case = TRUE) & -->
+<!--     grepl("Reviewer's conclusions", Section, ignore.case = TRUE) -->
+<!--   ) -->
+<!-- test -->
+
+
+<!-- # check that all the remaining ones are withdrawns reviews -->
+<!-- temp2 <-  processed_data %>% filter( -->
+<!--   !(DOI.unique %in% unique(temp$DOI.unique)) -->
+<!-- ) -->
+<!-- nrow(temp2) -->
+<!-- length(unique(temp2$DOI.unique))/length(unique(processed_data$DOI.unique)) -->
+
+<!-- rm(temp, test, temp2) -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- # OLD Analyses -->
+
+
+
+<!-- ```{r} -->
+<!-- f_get_latest_versions <- function(df){ -->
+<!--   df_latest <- df %>% -->
+<!--     # Find the latest version for each DOI.unique -->
+<!--     group_by(DOI.unique) %>% -->
+<!--     arrange(desc(Published), .by_group = TRUE) %>% # Arrange within groups -->
+<!--     slice(1) %>%  # Keep only the latest version -->
+<!--     ungroup() -->
+<!--   return(df_latest) -->
+<!-- } -->
+<!-- f_get_first_versions <- function(df){ -->
+<!--   df_latest <- df %>% -->
+<!--     # Find the latest version for each DOI.unique -->
+<!--     group_by(DOI.unique) %>% -->
+<!--     arrange(Published, .by_group = TRUE) %>% # Arrange within groups -->
+<!--     slice(1) %>%  # Keep only the latest version -->
+<!--     ungroup() -->
+<!--   return(df_latest) -->
+<!-- } -->
+<!-- ``` -->
+
+
+<!-- ## Events -->
+
+<!-- Many descriptions are very similar, possible to gather some of them ? -->
+
+<!-- ```{r} -->
+<!-- # Possibles values taken by Event -->
+<!-- unique(versions_with_events$Event) -->
+
+<!-- (temp <- versions_with_events %>% -->
+<!--   group_by(Event) %>% -->
+<!--   summarise( -->
+<!--     percent_event = round(n()/nrow(versions_with_events)*100), -->
+<!--     count_event = n(), -->
+<!--     unique_descriptions = length(unique(Description)) -->
+<!--     ) %>% -->
+<!--     arrange(desc(count_event)) -->
+<!--   ) -->
+
+<!-- # Proportion of the different events -->
+<!-- #round(prop.table(table(versions_with_events$Event)) * 100, 2) -->
+<!-- ``` -->
+
+<!-- ### Amended -->
+
+<!-- out of almost 14 000 "Amended" -->
+
+<!-- many occurences of -->
+
+<!-- Converted to new review format: about 6500 -->
+
+<!-- Contact details updated (careful, many different format): almost 2000 -->
+
+<!-- Withdrawn: gather them, they are in different format -->
+
+<!-- ```{r} -->
+
+<!-- # # get doi versions where an event is described as stable -->
+<!-- # amended_doi_versions <- versions_with_events %>% -->
+<!-- #   filter(Event == "Amended" ) %>% -->
+<!-- #   pull(Version) -->
+<!-- # -->
+<!-- # # Associated events. A priori no correlation -->
+<!-- # amended <- versions_with_events %>% filter(Version %in% amended_doi_versions) -->
+<!-- # table(amended$Event) -->
+<!-- # -->
+<!-- # # Descriptions associated with Amended event -->
+<!-- # amended <- versions_with_events %>% -->
+<!-- #   filter(Event == "Amended" ) -->
+<!-- # # more than 4000 unique descriptions out of almost 14 000 Amended -->
+<!-- # length(unique(amended$Description)) -->
+<!-- # nrow(amended) -->
+<!-- # -->
+<!-- # # the most common description items (more than 100 occurence) -->
+<!-- # temp <- amended %>% -->
+<!-- #   select(Description) %>% -->
+<!-- #   group_by(Description) %>% -->
+<!-- #   summarise(count = n()) -->
+<!-- # temp %>% filter(count>100) -->
+<!-- ``` -->
+
+
+<!-- ### New search -->
+
+<!-- 4604 unique descriptions out of 5199 New Search Events -->
+
+<!-- vérifier les version_date > publisehd_date -->
+
+<!-- ```{r} -->
+<!-- # # get doi versions where an event is described as stable -->
+<!-- # new_search_doi_versions <- versions_with_events %>% -->
+<!-- #   filter(Event == "New search has been performed" ) %>% -->
+<!-- #   pull(Version) -->
+<!-- # -->
+<!-- # new_search <- versions_with_events %>% filter(Version %in% new_search_doi_versions) -->
+<!-- # table(new_search$Event) -->
+<!-- # -->
+<!-- # # Descriptions associated with New Search event -->
+<!-- # new_search <- versions_with_events %>% -->
+<!-- #   filter(Event == "New search has been performed" ) -->
+<!-- # # more than 4000 unique descriptions out of almost 14 000 Amended -->
+<!-- # length(unique(new_search$Description)) -->
+<!-- # nrow(new_search) -->
+<!-- # -->
+<!-- # # the most common description items (more than 100 occurence) -->
+<!-- # temp <- new_search %>% -->
+<!-- #   select(Description) %>% -->
+<!-- #   group_by(Description) %>% -->
+<!-- #   summarise(count = n()) -->
+<!-- # temp %>% filter(count>9) %>% arrange(desc(count)) -->
+<!-- # -->
+<!-- # # combination with other events -->
+<!-- # temp <- new_search %>% -->
+<!-- #   group_by(Version) %>% -->
+<!-- #   mutate(nb_events = n()) -->
+<!-- # table(temp$nb_events) -->
+<!-- ``` -->
+
+<!-- ### Declared stable ++ -->
+
+<!-- 490 unique descriptions out of 906 stable -->
+
+<!-- les plotter au cours du temps: année de la première fois que déclarée stable, % of total cochrane reviews that are stable -->
+
+<!-- faire aussi analyse manuelle sur est-ce qu'elles sont restées stables; raison pour lesquelles elles sont stables ? -->
+
+<!-- Est-ce qu'on peut en identifier + qui sont stables si on regarde que les descriptions avec ctrl F ? -->
+
+
+<!-- ```{r} -->
+<!-- # get doi versions where an event is described as stable -->
+<!-- stable_doi_versions <- versions_with_events %>% -->
+<!--   filter(Event == "Review declared as stable" ) %>% -->
+<!--   pull(Version) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- # stable <- versions_with_events %>% filter(Version %in% stable_doi_versions) -->
+<!-- # table(stable$Event) -->
+<!-- # -->
+<!-- # # Unique reviews labelled as stable: 755 -->
+<!-- # length(unique(stable$DOI.unique)) -->
+<!-- # -->
+<!-- # # Descriptions associated with Stable event -->
+<!-- # stable <- versions_with_events %>% -->
+<!-- #   filter(Event == "Review declared as stable" ) -->
+<!-- # # more than 4000 unique descriptions out of almost 14 000 Amended -->
+<!-- # length(unique(stable$Description)) -->
+<!-- # nrow(stable) -->
+<!-- # -->
+<!-- # # the most common description items -->
+<!-- # temp <- stable %>% -->
+<!-- #   select(Description) %>% -->
+<!-- #   group_by(Description) %>% -->
+<!-- #   summarise(count = n()) -->
+<!-- # temp %>% filter(count>9) %>% arrange(desc(count)) -->
+<!-- # -->
+<!-- # # association with other event items -->
+<!-- # temp <- stable %>% -->
+<!-- #   group_by(Version) %>% -->
+<!-- #   mutate(nb_events = n()) -->
+<!-- # table(temp$nb_events) -->
+<!-- ``` -->
+
+
+
+<!-- through time -->
+
+<!-- ```{r} -->
+<!-- temp <- processed_data %>% -->
+<!--   filter(Version %in% stable_doi_versions) %>% -->
+<!--   f_get_first_versions() -->
+
+<!-- ggplot(temp) + -->
+<!--   geom_histogram( -->
+<!--     aes(Published, fill=version_stage), -->
+<!--     alpha=.7 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     x="", y="", -->
+<!--     title = "Reviews declared stable", -->
+<!--     subtitle = "year: year of the first version when the review was delcared stable", -->
+<!--     fill= "first stable version\nof the review" -->
+<!--   ) -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ## Different reviews versions (protocol and review number) -->
+
+<!-- ### Versions by years -->
+
+<!-- #### newly published reviews (V1) by year -->
+
+<!-- ```{r} -->
+<!-- ggplot(versions %>% filter(version_stage=="V1")) + -->
+<!--   geom_histogram( -->
+<!--     aes(as.integer(format(Published, "%Y"))), alpha=.7 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     x = "", y="", title = "Newly published reviews (version 1)" -->
+<!--     ) -->
+<!-- ``` -->
+
+<!-- #### latest update of reviews in the database as of 2024 -->
+
+<!-- ```{r} -->
+<!-- # get only the last published version, based on original database -->
+<!-- DOIs_latest <- unique(cochrane_dataset$DOI) -->
+<!-- temp <- versions %>% filter(Version %in% paste0("https://doi.org/", DOIs_latest)) -->
+
+<!-- ggplot(temp) + -->
+<!--   geom_histogram( -->
+<!--     aes(as.integer(format(Published, "%Y")), fill = version_stage), -->
+<!--     alpha=.8 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     y="", x="", -->
+<!--     title = "latest update (with version number) of reviews in the database as of 2024" -->
+<!--     ) -->
+<!-- ``` -->
+
+<!-- possible to see for different years -->
+
+<!-- ```{r} -->
+<!-- # year_cutoff <- 2020  # Replace this with the year of your choice -->
+<!-- # -->
+<!-- # # Processing Steps -->
+<!-- # temp <- versions %>% -->
+<!-- # -->
+<!-- #   # Remove rows where the "Published" date is above the selected year -->
+<!-- #   filter(format(Published, "%Y") <= year_cutoff) %>% -->
+<!-- # -->
+<!-- #   # Find the latest version for each DOI.unique -->
+<!-- #   f_get_latest_versions() -->
+<!-- # -->
+<!-- # ggplot(temp %>% filter(version_stage != "Protocol")) + -->
+<!-- #   geom_histogram( -->
+<!-- #     aes( -->
+<!-- #       as.integer(format(Published, "%Y")), fill = version_stage -->
+<!-- #       ) -->
+<!-- #     ) + -->
+<!-- #   labs( -->
+<!-- #     y="", x="", -->
+<!-- #     title = paste("latest update (with version number) of reviews in the database as of", year_cutoff) -->
+<!-- #     ) -->
+<!-- # -->
+<!-- # #compared to their study -->
+<!-- # # all updates 2016-2020 -->
+<!-- # nrow(temp %>% filter(format(Published, "%Y") >= 2016)) -->
+<!-- # # exclude V1s -->
+<!-- # nrow(temp %>% filter(format(Published, "%Y") >= 2016, version_stage!="V1")) -->
+<!-- ``` -->
+
+
+<!-- ### Protocols -->
+
+<!-- #### reviews with no protocol -->
+
+<!-- newly published reviews with no protocol -->
+
+<!-- ```{r} -->
+<!-- no_protocol <- versions %>% -->
+<!--   group_by(DOI.unique) %>% -->
+<!--   filter(!any(Stage == "Protocol")) %>% -->
+<!--   ungroup() -->
+<!-- length(unique(no_protocol$DOI.unique)) -->
+
+<!-- # to check -->
+<!-- no_protocol_IDs <- unique(no_protocol$DOI.unique) -->
+<!-- test <- versions %>% filter(DOI.unique %in% no_protocol_IDs) -->
+<!-- #ok, no protocols in version_stage -->
+
+<!-- #proportion in percent -->
+<!-- round(length(unique(no_protocol$DOI.unique))/length(unique(temp$DOI.unique))*100) -->
+
+<!-- # new reviews (date of VA) with no protocols -->
+<!-- temp2 <- no_protocol %>% -->
+<!--   filter(version_stage=="V1") %>% -->
+<!--   mutate(protocol = "no protocol") -->
+<!-- length(unique(temp2$DOI.unique)) -->
+
+<!-- # new reviews (V1) with protocoles -->
+<!-- temp3 <- versions %>% -->
+<!--   filter(!(DOI.unique %in% unique(no_protocol$DOI.unique))) %>% -->
+<!--   filter(version_stage=="V1") %>% -->
+<!--   mutate(protocol = "with a protocol") -->
+<!-- length(unique(temp3$DOI.unique)) -->
+
+<!-- temp2 <- rbind(temp2, temp3) -->
+<!-- ``` -->
+
+<!-- absolute -->
+
+<!-- ```{r} -->
+<!-- ggplot(temp2) + -->
+<!--   geom_histogram( -->
+<!--     aes( -->
+<!--       as.integer(format(Published, "%Y")), fill = protocol -->
+<!--       ), -->
+<!--     alpha = .7 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="newly published reviews (version 1)", -->
+<!--     x="", y="", fill="" -->
+<!--     ) -->
+<!-- table(temp2$protocol) -->
+<!-- ``` -->
+
+<!-- relative -->
+
+<!-- ```{r} -->
+<!-- ggplot(temp2) + -->
+<!--   geom_histogram( -->
+<!--     aes( -->
+<!--       as.integer(format(Published, "%Y")), fill = protocol -->
+<!--       ), -->
+<!--     alpha = .7, position = "fill" -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="proportion of newly published reviews (version 1)", -->
+<!--     x="", y="", fill="" -->
+<!--     ) -->
+<!-- ``` -->
+
+
+<!-- #### publication of protocols -->
+
+<!-- (pas complet, ajouter la databse des protocoles !) -->
+
+<!-- avec cette databse, on a les protocoles qui ont aboutit à une revue -->
+
+<!-- avec l'autre databse, ça sera les protcoles qui n'ont pas aboutit à une revue -->
+
+<!-- ```{r} -->
+<!-- ggplot(versions %>% filter(version_stage=="Protocol")) + -->
+<!--   geom_histogram( -->
+<!--     aes(as.integer(format(Published, "%Y"))), alpha=.7 -->
+<!--     ) + -->
+<!--   labs(x = "", y="", title = "newly published protocols") -->
+<!-- ``` -->
+
+<!-- #### reviews with only a protocol -->
+
+<!-- should not find any, as there is a special feature in cochrane dsr search ? -->
+
+<!-- ```{r} -->
+<!-- only_a_protocol <- temp %>% -->
+<!--   group_by(DOI.unique) %>% -->
+<!--   filter( -->
+<!--     any(Stage == "Protocol") & !any(grepl("^V\\d+$", version_stage)) -->
+<!--   ) %>% -->
+<!--   ungroup() -->
+
+<!-- #proportion in percent -->
+<!-- round( -->
+<!--   length(unique(only_a_protocol$DOI.unique))/length(unique(temp$DOI.unique))*100, -->
+<!--   3 -->
+<!--   ) -->
+<!-- ``` -->
+
+
+<!-- ### Evolution of versions -->
+
+<!-- #### reviews with only a V1 and so no subsequent update -->
+
+<!-- là il faudrait quand même vérifier les cas où new search > date version -->
+
+<!-- ```{r} -->
+<!-- only_one_version <- temp %>% -->
+<!--   group_by(DOI.unique) %>% -->
+<!--   filter( -->
+<!--     sum(grepl("^V\\d+$", version_stage)) == 1 &  # Exactly one version labeled as "V1", "V2", etc. -->
+<!--     any(version_stage == "V1")                  # Specifically, there is a "V1" -->
+<!--   ) %>% -->
+<!--   ungroup() -->
+
+<!-- #proportion in percent -->
+<!-- round(length(unique(only_one_version$DOI.unique))/length(unique(temp$DOI.unique))*100) -->
+
+<!-- # we remove the "Protocol" stage and only keep "V1 to plot the evolution through time -->
+<!-- ggplot(only_one_version %>% filter(version_stage=="V1")) + -->
+<!--   geom_histogram(aes(as.integer(format(Published, "%Y")))) + -->
+<!--   labs( -->
+<!--     title="nb of reviews with only 1 version", -->
+<!--     x="",y="" -->
+<!--     ) -->
+<!-- ``` -->
+
+<!-- #### database compostion through time -->
+
+<!-- ```{r} -->
+<!-- # Define the version hierarchy -->
+<!-- #version_order <- c("Protocol", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10") -->
+
+<!-- # Generate years from 1995 to 2024 -->
+<!-- years <- 1995:2024 -->
+
+<!-- # Create a new data frame with the cumulative databse for each year -->
+<!-- result <- bind_rows(lapply(years, function(year) { -->
+<!--   versions %>% -->
+<!--     filter(as.integer(format(Published, "%Y")) <= year) %>%  # Filter rows where 'Published' year <= current year -->
+<!--     group_by(DOI.unique) %>% -->
+<!--     arrange(version_stage, .by_group = TRUE) %>%  # Order versions -->
+<!--     slice_tail(n = 1) %>%  # Keep the latest version -->
+<!--     ungroup() %>% -->
+<!--     mutate(year = year) %>%  # Add the current year column -->
+<!--     distinct(DOI.unique, .keep_all = TRUE) -->
+<!-- })) -->
+<!-- ``` -->
+
+
+<!-- absolute -->
+
+<!-- ```{r} -->
+<!-- ggplot(result %>% filter(version_stage != "Protocol")) + -->
+<!--   geom_histogram( -->
+<!--     aes(year, fill=version_stage), alpha=.8 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="Reviews within the database, by version", -->
+<!--     y="", x="", -->
+<!--     fill="latest version\nof review" -->
+<!--     ) -->
+<!-- ``` -->
+
+<!-- percent -->
+
+<!-- ```{r} -->
+<!-- ggplot(result %>% filter(version_stage != "Protocol")) + -->
+<!--   geom_histogram( -->
+<!--     aes(year, fill=version_stage), position = "fill", alpha=.8 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="Reviews within the database, by version", -->
+<!--     y="", x="", -->
+<!--     fill="latest version\nof review" -->
+<!--     ) -->
+
+<!-- table(result %>% filter(year==2024) %>% pull(version_stage)) -->
+<!-- ``` -->
+
+
+
+
+
+
+
+
+

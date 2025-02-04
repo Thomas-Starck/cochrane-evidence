@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Get Cochrane Systematic Reviews Data – cochrane-updates</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-8ea72dc5fed832574809a9c94082fbbb.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d1b12f2568ecbe55642fee6aa00bd082.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b2511bcbb01c2159fd96a78deb42ffd9.min.css" rel="prefetch" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">cochrane-updates</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./cochrane_updates.html" aria-current="page"> 
+<span class="menu-text">Gather data</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./database_analysis.html"> 
+<span class="menu-text">Analyze data</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#load-cochrane-reviews-dataset" id="toc-load-cochrane-reviews-dataset" class="nav-link active" data-scroll-target="#load-cochrane-reviews-dataset">Load Cochrane reviews dataset</a></li>
+  <li><a href="#get-all-versions-of-reviews" id="toc-get-all-versions-of-reviews" class="nav-link" data-scroll-target="#get-all-versions-of-reviews">Get all versions of reviews</a></li>
+  <li><a href="#scrap-open-access-data" id="toc-scrap-open-access-data" class="nav-link" data-scroll-target="#scrap-open-access-data">Scrap open access data</a></li>
+  <li><a href="#scrap-data-behind-paywalls" id="toc-scrap-data-behind-paywalls" class="nav-link" data-scroll-target="#scrap-data-behind-paywalls">Scrap data behind paywalls</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Get Cochrane Systematic Reviews Data</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This page presents the procedure and code to gather data from the Cochrane Systematic Reviews Database, mainly through webs crapping.</p>
+<!-- TBD:  -->
+<!--   -   CHANGER processed_data en versions_with_events; l'enregistrer non pas à la source mais dans folder versions -->
+<!--   -   VOIR LES 34 SR versions not processed -->
+<!--   -   numeroter protocols -->
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">warning=</span>F, <span class="at">message=</span>F, <span class="at">results=</span>F, <span class="at">fig.align =</span> <span class="st">"center"</span>,  <span class="at">dev=</span><span class="st">'svg'</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the function file</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"functions.R"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#included:</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#-function to save csv f_save_csv_files</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#-function to identify URLS that have not yet been processed during scrapping f_get_urls_to_process</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#-function to load a web page, with given URL f_get_html_page</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#-set the default scale_color and scale_fill to viridis theme</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#-loads the core tidyverse package</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(openai)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DT) <span class="co"># for interactive table</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Set theme for graphs</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(), <span class="co">#no vertical lines by default</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="co">#text = element_text(family = "Times New Roman"), #default font</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face=</span><span class="st">"bold"</span>) <span class="co">#graphs titles in bolds</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="load-cochrane-reviews-dataset" class="level1">
+<h1>Load Cochrane reviews dataset</h1>
+<p>This work focuses on systematic reviews in the Cochrane library. We just focus on Reviews on Interventions (8976 reviews), excluding reviews labelled Diagnostic (193), Overview (70), Methodology (45), Qualitative (30), Prognosis (21), Rapid (13), Prototype (10).</p>
+<p>The reviews data were downloaded as csv file on Cochrane Database of Systematic Reviews <a href="https://www.cochranelibrary.com/cdsr/reviews" target="_blank">webpage</a> on January 22, 2025.</p>
+<p>JE PENSE ENLEVER ABSTRACT EST OK; AUSSI JE PENSE ON PEUT GARDER 1 SEUL ENTRE DOI/URL</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the downloaded database of cochrane systematic reviews on interventions</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cochrane_dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"source_data/cochrane_data_base_2025_01_22/review_type/SR_Interventions.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(cochrane_dataset) <span class="co">#quick look at the data</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove columns that we do not study</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>cochrane_dataset <span class="ot">&lt;-</span> cochrane_dataset <span class="sc">%&gt;%</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cochrane.Review.ID"</span>, <span class="co"># this is equal to the last part of the DOI, bringing no further information</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Source"</span>, <span class="co"># always "Cochrane Database of Systematic Reviews"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Issue"</span>, <span class="co"># integer between 1-12, representing the month of publication</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Publisher"</span>, <span class="co"># always "John Wiley &amp; Sons, Ltd"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ISSN"</span>, <span class="co"># always "1465-1858"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Items that can be interesting for further analysis, but that we remove for now to make data lighter</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Author.s."</span>, </span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Keywords"</span>, </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Cochrane.Review.Group.Code"</span> <span class="co"># 66 different review groups ("Childhood Cancer", "Stroke"...)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># The dataset only reports the latest version of each SR, but we will study every version of each SR</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># the dataset only reports the DOI of the latest version (e.g. "10.1002/14651858.CD009730.pub3")</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># each version DOI of a same SR only differs by the ".pubN" suffix</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># we create a DOI.unique which will identify each SR, whatever the version, by removing the ".pubN" suffix</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>cochrane_dataset<span class="sc">$</span>DOI.unique <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.pub</span><span class="sc">\\</span><span class="st">d+"</span>, <span class="st">""</span>, cochrane_dataset<span class="sc">$</span>DOI)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># See the remaning items: "Title", "Year", "Abstract", "DOI", "URL", "DOI.unique"</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(cochrane_dataset)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorder columns, rename URL to make it explicit it relates to a particular version</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>cochrane_dataset <span class="ot">&lt;-</span> cochrane_dataset <span class="sc">%&gt;%</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(Year, DOI.unique, <span class="at">URL_version =</span> URL, Title, Abstract, DOI))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="get-all-versions-of-reviews" class="level1">
+<h1>Get all versions of reviews</h1>
+<p>The downloaded database only reports the latest version of each systematic review. But we want data on all published versions, to study changes between past and current versions on a same research question, and to see the evolution of Cochrane database content through time.</p>
+<p>The history of versions is accessible on each systematic review webpage, below the title (go for instance on <a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006919.pub5" target="_blank">this one</a> to see). The history of versions webpage (see <a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006919.pub5/information#versionTable" target="_blank">here</a> for instance) then presents a table with all versions and their unique DOI.</p>
+<p>Below is the code to</p>
+<ul>
+<li>go on the history of versions webpage of a given Systematic Review</li>
+<li>get the reported data for each of its particular versions (Publication date, Title, Stage, Authors, URL)</li>
+<li>reiterate of the 8976 reviews of the database (as of January 22, 2025).</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Scrap versions updates data</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Compute versions numbers</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions used for extracting the versions data during scrapping:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to check if a string of characters is a date; returns TRUE/FALSE</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>is_date <span class="ot">&lt;-</span> <span class="cf">function</span>(string) {</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">as.Date</span>(string, <span class="at">format =</span> <span class="st">"%Y %b %d"</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to clean an extracted table and standardize it to correct format</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>clean_table <span class="ot">&lt;-</span> <span class="cf">function</span>(table, DOI.unique){</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Checks if there actually was a version history version to download</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(table)) {</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert the table to a data frame</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> xml2<span class="sc">::</span><span class="fu">xml_find_all</span>(table, <span class="st">".//tr"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>      purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="sc">~</span> {</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        cells <span class="ot">&lt;-</span> <span class="fu">xml_find_all</span>(.x, <span class="st">".//th | .//td"</span>)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">setNames</span>(<span class="fu">as.list</span>(<span class="fu">xml_text</span>(cells)), <span class="fu">xml_name</span>(cells))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      })</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Use the first row as column names and remove first row (now used as column names)</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(table_data) <span class="ot">&lt;-</span> table_data[<span class="dv">1</span>, ]</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> table_data[<span class="sc">-</span><span class="dv">1</span>, ]</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove unnamed columns (those with blank or NA names) and </span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># clean the remaining ones (remove extra spaces)</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> table_data[, <span class="sc">!</span><span class="fu">is.na</span>(<span class="fu">colnames</span>(table_data)) <span class="sc">&amp;</span> <span class="fu">colnames</span>(table_data) <span class="sc">!=</span> <span class="st">""</span>]</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(table_data) <span class="ot">&lt;-</span> <span class="fu">trimws</span>(<span class="fu">colnames</span>(table_data)) <span class="co"># Base R method to remove leading/trailing spaces</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Sanitize text to escape quotation marks</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># otherwise problems in columns delimitations, when text contains ' " '</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> table_data <span class="sc">%&gt;%</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">gsub</span>(<span class="st">'"'</span>, <span class="st">'""'</span>, .))) <span class="co"># Escape double quotes for  CSV compatibility</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">#escapes double quotation marks (") by doubling them (""), which is the correct way to handle quotes in CSV files</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove rows where "Title" item is empty</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> table_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Title <span class="sc">!=</span> <span class="st">""</span>)</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Fill Version column NAs with the previous non-NA value</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> table_data <span class="sc">%&gt;%</span> <span class="fu">fill</span>(Version, <span class="at">.direction =</span> <span class="st">"down"</span>)</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract version events data into a revisions table, and correctly name their column names</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    revisions <span class="ot">&lt;-</span> table_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Published<span class="sc">==</span><span class="st">""</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span>Published)</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colnames</span>(revisions) <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"Revision_date"</span>, <span class="st">"Event"</span>, <span class="st">"Description"</span>, <span class="st">"Version"</span>) </span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove lines where no date in the Revision_date column of revisions tables</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    revisions <span class="ot">&lt;-</span> revisions <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">sapply</span>(Revision_date, is_date))</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove rows where Publication date is empty in the table_data</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    table_data <span class="ot">&lt;-</span> table_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(Published <span class="sc">!=</span> <span class="st">""</span>)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="co"># now join the 2 tables for full description of all revision events for each update</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    full_data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(table_data, revisions, <span class="at">by=</span><span class="st">"Version"</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="co"># now adds the unique DOI ID of the Systematic Review</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    full_data<span class="sc">$</span>DOI.unique <span class="ot">&lt;-</span> DOI.unique</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Return the processed Systematic Review versions data</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(full_data)</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Return NULL if no table is not found</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>  <span class="cf">else</span> {</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NULL</span>) </span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Uncomment the code below to scrap the versions DOIs/URLs (takes several hours). I scrapped the version history data on January 22, 2025.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Path to the CSV file where the versions data of processed systematic reviews are stored</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # if does not exist yet, will be created in the following</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># csv_file &lt;- "output_data/versions/SR_versions_with_events.csv"</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # Listing Systematic Reviews (identified by DOI.unique) whose versions data have not been extracted yet</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># # Identified by checking which DOI.unique from cochrane_dataset (the downloaded cochrane databse) are not present in the csv_file storing results</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # Here 9000 &gt; to the number of systematic reviews (8,976), so it will scrap all the reviews; you can decrease the number</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># DOIs.unique.unprocessed &lt;- f_get_urls_to_process(csv_file, cochrane_dataset, 9000, "DOI.unique")</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># cat(length(DOIs.unique.unprocessed), " systematic reviews left to process, out of\n",</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#     nrow(cochrane_dataset),  " systematic reviews in the database (as of January 22, 2025)", sep="")</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># # Process each DOI to get version history and append the result to the CSV file</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># for (DOI.unique in DOIs.unique.unprocessed) {</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   # URL linking to review version history</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- paste0("https://www.cochranelibrary.com/cdsr/doi/", DOI.unique, "/information#versionTable")</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get html webpage content</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   doc &lt;- f_get_html_page(url)</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the raw table data, identified with the html ID versionTableContent</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   table_versions &lt;- xml_find_first(doc, "//table[@id='versionTableContent']")</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Clean the extracted table</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#   cleaned_table_versions &lt;- clean_table(table_versions, DOI.unique)</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Prints the processed systematic review</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   cat("Systematic Review", print(DOI.unique), "processed")</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Add the results to the csv storing results (if there acutally was a table)</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co">#   if (!is.null(cleaned_table_versions)) {</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co">#     # Append to CSV file (and write col names only if does not exist yet)</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">#     write_csv(cleaned_table_versions, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Below is an example of the history of version data displayed for a particular review (<a href="https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006919.pub5/information#versionTable">here</a>){target=“_blank”}).</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the pre-scrapped data</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>versions_with_events <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data/versions/SR_versions_with_events.csv"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Only select columns that are reported on the webpage, for SR "10.1002/14651858.CD006919" </span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> versions_with_events <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(DOI.unique <span class="sc">==</span> <span class="st">"10.1002/14651858.CD006919"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">"Published"</span>, <span class="st">"Title"</span>, <span class="st">"Stage"</span>, <span class="st">"Authors"</span>, <span class="st">"Version"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="co"># Because or processed data includes the "show revisions" data, not displayed here</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the table</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">datatable</span>(temp, <span class="at">rownames =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>LE CAS DES 34 NON PROCESSED ?</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>csv_file <span class="ot">&lt;-</span> <span class="st">"output_data/versions/SR_versions_with_events.csv"</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Transform date string to a date object</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>versions_with_events<span class="sc">$</span>Published <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(versions_with_events<span class="sc">$</span>Published, <span class="at">format =</span> <span class="st">"%Y %b %d"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># number of reviews unprocessed for some reason</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>DOIs.unique.unprocessed <span class="ot">&lt;-</span> <span class="fu">f_get_urls_to_process</span>(csv_file, cochrane_dataset, <span class="dv">16000</span>, <span class="st">"DOI.unique"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(DOIs.unique.unprocessed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>We now want to attribute a version number (V1, V2, V3…) to each particular version. Based on the table above, we can see that before the first version presenting results, there can be one or several Protocols. We code below attributes a version number to each version, not counting protocols.</p>
+<p>NUMEROTER LES PROTOCOLES !</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the reviews versions, based on their URL suffix: empty, .pub2, .pub3, etc... If there have been n protocols with an associated URL, the version number is N - n, with N the number in the URL suffix pubN (N=1 if the URL is empty).</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># get a table with each line a unique occurence of version (no multiple lines due to multiple Events on a same version)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>versions <span class="ot">&lt;-</span> versions_with_events <span class="sc">%&gt;%</span> </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Published, Stage, Version, DOI.unique) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>() <span class="co"># Because of multiple events in 1 unique version</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># if the stage is a protocol, indicate it, leave empty otherwise, ready to be filled by version number</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>versions <span class="ot">&lt;-</span> versions <span class="sc">%&gt;%</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">version_stage =</span> <span class="fu">case_when</span>(Stage <span class="sc">==</span> <span class="st">"Protocol"</span> <span class="sc">~</span> <span class="st">"Protocol"</span>,T<span class="sc">~</span><span class="cn">NA</span>))</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># function to extract the N in URL suffix pubN, used to determine the version</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>extract_pubN_number <span class="ot">&lt;-</span> <span class="cf">function</span>(version) {</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(version, <span class="st">"</span><span class="sc">\\</span><span class="st">.pub</span><span class="sc">\\</span><span class="st">d+$"</span>)) {</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.integer</span>(<span class="fu">str_extract</span>(version, <span class="st">"</span><span class="sc">\\</span><span class="st">d+$"</span>))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="dv">1</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co"># fill actual version number, not counting protocol as a version number</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># - protocol rows keep "Protocol"</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co"># - non-protocol rows get assigned "V" followed by the extracted number minus the number of protocols for that DOI.unique</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>versions <span class="ot">&lt;-</span> versions <span class="sc">%&gt;%</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(DOI.unique) <span class="sc">%&gt;%</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Count the number of protocol rows for this DOI.unique</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">protocol_count =</span> <span class="fu">sum</span>(Stage <span class="sc">==</span> <span class="st">"Protocol"</span>),</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># extract version number (or get default of 1)</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">version_number =</span> <span class="fu">sapply</span>(Version, extract_pubN_number),</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># For non-protocol rows (version_stage is NA) assign "V" followed by</span></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># version_number adjusted by subtracting protocol_count.</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Protocol rows keep "Protocol".</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">version_stage =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(version_stage) <span class="sc">~</span> version_stage,</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(version_stage) <span class="sc">~</span> <span class="fu">paste0</span>(<span class="st">"V"</span>, version_number <span class="sc">-</span> protocol_count),</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> version_stage</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>version_number, <span class="sc">-</span>protocol_count) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Order the versions: Protocol, V1, V2, V3...</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>versions<span class="sc">$</span>version_stage <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>  versions<span class="sc">$</span>version_stage, </span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Protocol"</span>, <span class="fu">paste0</span>(<span class="st">"V"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>))</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="co"># now add version number to the main file</span></span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>versions_with_events<span class="sc">$</span>version_stage <span class="ot">&lt;-</span> </span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  versions<span class="sc">$</span>version_stage[<span class="fu">match</span>(versions_with_events<span class="sc">$</span>Version, versions<span class="sc">$</span>Version)]</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="co"># save the file with all the versions and their URL for each review</span></span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="fu">f_save_csv_files</span>(versions, <span class="st">"output_data/versions/"</span>, <span class="st">"SR_versions.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+<p>From now we will only focus on versions with results; we thus exclude the versions which are only protocols.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>versions_without_protocols <span class="ot">&lt;-</span> versions <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(version_stage<span class="sc">!=</span><span class="st">"Protocol"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(versions_without_protocols), <span class="st">"unique versions, excluding protocols</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(versions)<span class="sc">-</span><span class="fu">nrow</span>(versions_without_protocols), <span class="st">"versions that are protocols"</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>There are 15343 unique versions, excluding protocols; and 7011 versions that are protocols.</p>
+</section>
+<section id="scrap-open-access-data" class="level1">
+<h1>Scrap open access data</h1>
+<p>Below are the items that are open acess for every review, and for which you can completely reproduce the data scrapping results.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Abstracts</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Plain language summary</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>For each abstract of each version, we extract the following contents:</p>
+<ul>
+<li>whether it is a withdrawn version (in this case the abstract title is ”<br>
+Reason for withdrawal from publication”)</li>
+<li>the abstract subsections (background, methods etc)</li>
+<li>the text content</li>
+</ul>
+<p>Uncomment the code below to scrap the abstract content of every versions (takes several hours). I scrapped the version history data on Feb 1, 2025.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # The principle is the same as in "Scrap versions URL"; see this section code if you want more details.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # Path to the CSV file</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># csv_file &lt;- "output_data/abstracts/SR_abstracts_with_sections.csv"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># versions_to_process &lt;- f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># length(versions_to_process)</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # Process each version and append the result to the CSV file</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># for (version_url in versions_to_process) {</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Clean the URL by removing the "https://doi.org/" part</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- sub("https://doi.org/", "", version_url)</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Construct the full URL for the review version history</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- paste0("https://www.cochranelibrary.com/cdsr/doi/", url)</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get the html code of the webpage page</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   doc &lt;- f_get_html_page(url)</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get the title of the Abstract section (in purple on the page)</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   section_title &lt;- doc %&gt;%</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_node("section.abstract") %&gt;%</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_nodes("h2.title") %&gt;%</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_text2()</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the abstract sections</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   sections &lt;- doc %&gt;%</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_node("div.abstract.full_abstract") %&gt;%# get abstract from its class ID</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_nodes("section") # Extract all &lt;section&gt; nodes</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Check if sections exist</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="co">#   if (length(sections) &gt; 0) {</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co">#     # Extract section titles and their corresponding text</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="co">#     df &lt;- tibble(</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co">#       Abstract_title = section_title,</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co">#       Section = sections %&gt;%</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a><span class="co">#         html_node("h3.title") %&gt;%</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a><span class="co">#         html_text(trim = TRUE) %&gt;%</span></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co">#         replace(is.na(.), "Unnamed Section"), # Replace missing titles with "Unnamed Section"</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="co">#       Text = sections %&gt;% html_node("p") %&gt;% html_text2() # Extract section content</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co">#   # If no sections exist, extract the whole abstract text</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   else {</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="co">#     full_text &lt;- doc %&gt;%</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">#       html_node("div.abstract.full_abstract") %&gt;%</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="co">#       html_text2() # Extract the full abstract text</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a><span class="co">#     # Create a tibble with "Unnamed Section"</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a><span class="co">#     df &lt;- tibble(</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a><span class="co">#       Abstract_title = section_title,</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a><span class="co">#       Section = "Unnamed Section",</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a><span class="co">#       Text = full_text</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get metadata associated with the version URL</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="co">#   metadata &lt;- versions_without_protocols %&gt;% filter(Version == version_url)</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Add metadata information</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="co">#   df &lt;- df %&gt;%</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co">#       Published = metadata$Published,</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co">#       Version = metadata$Version,</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a><span class="co">#       DOI.unique = metadata$DOI.unique,</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a><span class="co">#       version_stage = metadata$version_stage</span></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Rearrange columns so metadata columns come first</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a><span class="co">#   df &lt;- df %&gt;%</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(Published, Version, DOI.unique, version_stage, everything())</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Append to CSV file (and write col names only if does not exist yet)</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a><span class="co">#   write_csv(df, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a><span class="co">#   glimpse(df) # shows the collected data</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>csv_file <span class="ot">&lt;-</span> <span class="st">"output_data/abstracts/SR_abstracts_with_sections.csv"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check no more versions to process</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">length</span>(<span class="fu">f_get_urls_to_process</span>(csv_file, versions_without_protocols, <span class="dv">16000</span>, <span class="st">"Version"</span>)), </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"versions left to process"</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Glimpse into the SR_abstracts_with_sections.csv content</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(csv_file))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>For each version, we extract the Plain Language Summary content. If there is no Plain Language Summary, the content is simply “NA”.</p>
+<p>Uncomment the code below to scrap the abstract content of every versions (takes several hours). I scrapped the version history data on January 27, 2025</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Path to the CSV file</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># csv_file &lt;- "output_data/plain_language_summary/SR_plain_language_summary.csv"</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># versions_to_process &lt;- f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># length(versions_to_process)</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># # Process each version and append the result to the CSV file</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># for (version_url in versions_to_process) {</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Clean the URL by removing the "https://doi.org/" part</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- sub("https://doi.org/", "", version_url)</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Construct the full URL for the review version history</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- paste0("https://www.cochranelibrary.com/cdsr/doi/", url)</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get the html code of the webpage page</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   doc &lt;- f_get_html_page(url)</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the Plain Language Summary text from the page</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   pls &lt;- doc %&gt;%</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_node("div.abstract.abstract_plainLanguageSummary") %&gt;%</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_text2()</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Retrieve the row(s) from versions_without_protocols for this version_url</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   version_data &lt;- versions_without_protocols %&gt;% filter(Version == version_url)</span></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Add the plain language summary as a new column</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   version_data &lt;- version_data %&gt;%</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(plain_languag_summary = pls)</span></span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Append to CSV file (and write col names only if does not exist yet)</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a><span class="co">#   write_csv(version_data, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a><span class="co">#   glimpse(version_data) # shows the collected data</span></span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>csv_file <span class="ot">&lt;-</span> <span class="st">"output_data/plain_language_summary/SR_plain_language_summary.csv"</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check no more versions to process</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">length</span>(<span class="fu">f_get_urls_to_process</span>(csv_file, versions_without_protocols, <span class="dv">16000</span>, <span class="st">"Version"</span>)), </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"versions left to process"</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Glimpse into the SR_abstracts_with_sections.csv content</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(csv_file))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="scrap-data-behind-paywalls" class="level1">
+<h1>Scrap data behind paywalls</h1>
+<p>Below are the Cochrane systematic reviews content that are not always open access, and might me behind paywalls. If you are not connected to a network which can access paying content, you will only get a subset of the results.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true">TBD Author’s conclusions</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false">Summary Of Findings</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<p>section class authorsConclusions</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Path to the CSV file</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># csv_file &lt;- "output_data/SR_authors_conclusion.csv"</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # Check if the CSV file exists and load processed Versions</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># if (file.exists(csv_file)) {</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   processed_data &lt;- read_csv(csv_file)</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   processed_versions &lt;- unique(processed_data$Version)</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># } else {</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   processed_versions &lt;- character(0)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co"># # Identify unprocessed Versions</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co"># versions_to_process &lt;- setdiff(versions_without_protocols$Version, processed_versions)</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># #only get a subset of the unprocessed version</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co"># versions_to_process &lt;- head(versions_to_process, 1000)</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co"># # Process each version and append the result to the CSV file</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co"># for (version_url in versions_to_process) {</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Clean the URL by removing the "https://doi.org/" part</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   version &lt;- sub("https://doi.org/", "", version_url)</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Construct the full URL for the review version history</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- paste0("https://www.cochranelibrary.com/cdsr/doi/", version)</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get the HTML page and parse it</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   response &lt;- GET(url, user_agent("Mozilla/5.0"))</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   doc &lt;- content(response, as = "parsed", encoding = "UTF-8")</span></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the abstract text from the page</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a><span class="co">#   pls &lt;- doc %&gt;%</span></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_node("div.abstract.abstract_plainLanguageSummary") %&gt;%</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_text2()</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Retrieve the row(s) from versions_without_protocols for this version_url</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a><span class="co">#   version_data &lt;- versions_without_protocols %&gt;%</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a><span class="co">#     filter(Version == version_url)</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Add the abstract_text as a new column</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a><span class="co">#   version_data &lt;- version_data %&gt;%</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(plain_languag_summary = pls)</span></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a><span class="co">#   # # Check if the file exists</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   # if (file.exists(csv_file)) {</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="co">#   #   # Append to the file without writing headers</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a><span class="co">#   #   write_csv(version_data, file = csv_file, append = TRUE)</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a><span class="co">#   # } else {</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a><span class="co">#   #   # Write the file with headers</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a><span class="co">#   #   write_csv(version_data, file = csv_file)</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a><span class="co">#   # }</span></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p>The extraction of the Summary Of Findings tables content operates in 2 steps, because the data formatting is not always the same and is more complex. First, we scrap and save the tables (represented by their html code) for each version. Second we extract the content by giving ChatGPT (chagtp-4o-mini) asking it to extract the information.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Scrap SOF sections content</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Extract content with OpenAI API</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>Summary Of Findings sections were generalized only starting 2008-2010. As a results, many reviews versions do not have such a section. If that is the case, we indicate “No summary of Findings” instead of the section centent.</p>
+<p>Uncomment the code below to scrap the abstract content of every versions (takes several hours). I scrapped the Summary Of Findings tables on January 28-30, 2025.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># csv_file &lt;- "output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># versions_to_process &lt;- f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># length(versions_to_process)</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># # Process each table version and append the result to the CSV file</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># for (version_url in versions_to_process) {</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Clean the URL by removing the "https://doi.org/" part</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- sub("https://doi.org/", "", version_url)</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Construct the full URL for the review version history</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   url &lt;- paste0("https://www.cochranelibrary.com/cdsr/doi/", url)</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Get the html code of the webpage page</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   doc &lt;- f_get_html_page(url)</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the summary of findings section</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   section_SOM &lt;- doc %&gt;%</span></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co">#     html_node("section.summaryOfFindings") %&gt;%</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co">#     as.character()</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a><span class="co">#     # Handle the case where the section is not found</span></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#     SOM_html_string &lt;- if (!is.na(section_SOM)) {</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a><span class="co">#       section_SOM %&gt;% as.character()</span></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co">#     } else {</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a><span class="co">#       "No summary of Findings"</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="co">#     }</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Create a data frame with version_url and the section</span></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co">#   data &lt;- data.frame(</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="co">#     Version = version_url,</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a><span class="co">#     SOM_html_string = SOM_html_string,</span></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co">#     stringsAsFactors = FALSE  # Ensure the strings are not converted to factors</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="co">#     )</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co">#   glimpse(data)</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Save (if file does not yet exist) or append (if exist) the data to the CSV file</span></span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co">#   write_csv(data, file=csv_file, append = TRUE, col_names = !file.exists(csv_file))</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>csv_file <span class="ot">&lt;-</span> <span class="st">"output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Check no more versions to process</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">length</span>(<span class="fu">f_get_urls_to_process</span>(csv_file, versions_without_protocols, <span class="dv">16000</span>, <span class="st">"Version"</span>)), </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"versions left to process"</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Glimpse into the SR_abstracts_with_sections.csv content</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(<span class="fu">read_csv</span>(csv_file))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Get only versions which contain a SOF</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>versions_with_SOM <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(csv_file) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(SOM_html_string <span class="sc">!=</span> <span class="st">"No summary of Findings"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Out of the 15343 systematic reviews versions, only 6525 have a summary of findings section.</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>Then, for each version Summary of Findings, we give the html tables to chagtp-4o-mini through OpenAI API, and ask it to extract some core information:</p>
+<ul>
+<li>the title of the summary of findings table</li>
+<li>the PICO (population, intervention, comparison, outcome)</li>
+<li>the certainty of evidence</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">Sys.getenv</span>(<span class="st">"OPENAI_API_KEY"</span>) <span class="sc">==</span> <span class="st">""</span>) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="st">"OpenAI API key not found. Please set the OPENAI_API_KEY environment variable."</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Uncomment and remplace to enter your API key</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Sys.setenv(OPENAI_API_KEY = "sk-XXXXX")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Uncomment the code below to extract the summary of findings tables content using chatgpt API. You will need an OpenAI API key. This is very long (about 40 hours, began on Feb 2, ended on Feb 4).</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># # Retrieve the list of version URLs to process</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># csv_file &lt;- "output_data/summary_of_findings/SR_SOF_confidence.csv"</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co"># versions_to_process &lt;- f_get_urls_to_process(csv_file, versions_with_SOM, 7000, "Version")</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># cat("Number of versions to process:", length(versions_to_process), "\n")</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co"># cat("Total unique versions:", length(unique(versions_with_SOM$Version)), "\n")</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># # Iterate over each version URL</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># for (version_url in versions_to_process) {</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Retrieve the row(s) from versions_without_protocols for this version_url</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   version_data &lt;- versions_without_protocols %&gt;% filter(Version == version_url)</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract metadata values</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co">#   published_date &lt;- version_data$Published[1]</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   doi_unique &lt;- version_data$DOI.unique[1]</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   version_stage &lt;- version_data$version_stage[1]</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the Summary of Findings section (as HTML)</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   SOM_section_html &lt;- versions_with_SOM %&gt;%</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="co">#     filter(Version == version_url) %&gt;%</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="co">#     pull(SOM_html_string)</span></span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Parse the SOM HTML content</span></span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   html_doc &lt;- read_html(SOM_section_html)</span></span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract all table nodes (assuming tables are contained within &lt;div class="table"&gt; elements)</span></span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   tables &lt;- html_doc %&gt;% html_nodes("div.table")</span></span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Check if any tables were found</span></span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a><span class="co">#   if(length(tables) == 0){</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a><span class="co">#     warning(paste("No tables found for Version:", version_url))</span></span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a><span class="co">#     next  # Skip to the next iteration if no tables are found</span></span>
+<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract HTML content for each table (each table is assumed to have a &lt;table&gt; node within the div)</span></span>
+<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a><span class="co">#   table_htmls &lt;- sapply(tables, function(tbl) {</span></span>
+<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a><span class="co">#     node &lt;- tbl %&gt;% html_node("table")</span></span>
+<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a><span class="co">#     if (!is.na(node)) as.character(node) else ""</span></span>
+<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a><span class="co">#   })</span></span>
+<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Combine the HTML for all tables using a separator to delineate them</span></span>
+<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a><span class="co">#   combined_tables_html &lt;- paste(table_htmls, collapse = "\n\n-----\n\n")</span></span>
+<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Create the prompt for OpenAI for the current SOM section containing multiple tables</span></span>
+<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a><span class="co">#   prompt &lt;- paste(</span></span>
+<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a><span class="co">#     "I have the following Cochrane Summary of Findings section (as HTML), containing multiple tables. Each table contains multiple outcomes with various details.",</span></span>
+<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a><span class="co">#     "For each outcome, please extract the following information as CSV (one row per outcome, one column per variable; fill missing data with 'NA'):",</span></span>
+<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- SOM_title: the table title (generally the first line) describing what is evaluated.",</span></span>
+<span id="cb17-49"><a href="#cb17-49" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- patient_population: population (and possibly subpopulations) of interest.",</span></span>
+<span id="cb17-50"><a href="#cb17-50" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- settings: e.g., inpatient hospital, primary care in Europe, etc.",</span></span>
+<span id="cb17-51"><a href="#cb17-51" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- intervention: the experimental intervention.",</span></span>
+<span id="cb17-52"><a href="#cb17-52" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- comparison: the comparator intervention (including no specific intervention).",</span></span>
+<span id="cb17-53"><a href="#cb17-53" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- outcome: outcome measured.",</span></span>
+<span id="cb17-54"><a href="#cb17-54" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- outcome_additional_info: any additional information about the outcome (e.g., scale, follow-up, etc.).",</span></span>
+<span id="cb17-55"><a href="#cb17-55" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- outcome_reported: 'yes' if associated certainty of evidence is reported, otherwise 'no'.",</span></span>
+<span id="cb17-56"><a href="#cb17-56" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n- certainty_of_evidence: Certainty of Evidence (omit symbols like ⊕ or ⊝).",</span></span>
+<span id="cb17-57"><a href="#cb17-57" aria-hidden="true" tabindex="-1"></a><span class="co">#     "  Possible values: 'high', 'moderate', 'low', 'very low', 'NA', or if unclear for you, 'unable to attribute'.",</span></span>
+<span id="cb17-58"><a href="#cb17-58" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n\nBelow is the combined HTML content for the tables:",</span></span>
+<span id="cb17-59"><a href="#cb17-59" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n\n", combined_tables_html,</span></span>
+<span id="cb17-60"><a href="#cb17-60" aria-hidden="true" tabindex="-1"></a><span class="co">#     "\n\nDo not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.",</span></span>
+<span id="cb17-61"><a href="#cb17-61" aria-hidden="true" tabindex="-1"></a><span class="co">#     sep = ""</span></span>
+<span id="cb17-62"><a href="#cb17-62" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb17-63"><a href="#cb17-63" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-64"><a href="#cb17-64" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Make the Chat Completion request (one request per SOM section)</span></span>
+<span id="cb17-65"><a href="#cb17-65" aria-hidden="true" tabindex="-1"></a><span class="co">#   response &lt;- tryCatch(</span></span>
+<span id="cb17-66"><a href="#cb17-66" aria-hidden="true" tabindex="-1"></a><span class="co">#     {</span></span>
+<span id="cb17-67"><a href="#cb17-67" aria-hidden="true" tabindex="-1"></a><span class="co">#       create_chat_completion(</span></span>
+<span id="cb17-68"><a href="#cb17-68" aria-hidden="true" tabindex="-1"></a><span class="co">#         model = "gpt-4o-mini",  # or "gpt-4" if available</span></span>
+<span id="cb17-69"><a href="#cb17-69" aria-hidden="true" tabindex="-1"></a><span class="co">#         messages = list(</span></span>
+<span id="cb17-70"><a href="#cb17-70" aria-hidden="true" tabindex="-1"></a><span class="co">#           list(role = "system", content = "You are a helpful medical reviewer assistant."),</span></span>
+<span id="cb17-71"><a href="#cb17-71" aria-hidden="true" tabindex="-1"></a><span class="co">#           list(role = "user",   content = prompt)</span></span>
+<span id="cb17-72"><a href="#cb17-72" aria-hidden="true" tabindex="-1"></a><span class="co">#         ),</span></span>
+<span id="cb17-73"><a href="#cb17-73" aria-hidden="true" tabindex="-1"></a><span class="co">#         temperature = 0</span></span>
+<span id="cb17-74"><a href="#cb17-74" aria-hidden="true" tabindex="-1"></a><span class="co">#       )</span></span>
+<span id="cb17-75"><a href="#cb17-75" aria-hidden="true" tabindex="-1"></a><span class="co">#     },</span></span>
+<span id="cb17-76"><a href="#cb17-76" aria-hidden="true" tabindex="-1"></a><span class="co">#     error = function(e) {</span></span>
+<span id="cb17-77"><a href="#cb17-77" aria-hidden="true" tabindex="-1"></a><span class="co">#       warning(paste("OpenAI API request failed for Version:", version_url, "with error:", e$message))</span></span>
+<span id="cb17-78"><a href="#cb17-78" aria-hidden="true" tabindex="-1"></a><span class="co">#       return(NULL)</span></span>
+<span id="cb17-79"><a href="#cb17-79" aria-hidden="true" tabindex="-1"></a><span class="co">#     }</span></span>
+<span id="cb17-80"><a href="#cb17-80" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb17-81"><a href="#cb17-81" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-82"><a href="#cb17-82" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Inform about the response and token usage</span></span>
+<span id="cb17-83"><a href="#cb17-83" aria-hidden="true" tabindex="-1"></a><span class="co">#   if (!is.null(response)) {</span></span>
+<span id="cb17-84"><a href="#cb17-84" aria-hidden="true" tabindex="-1"></a><span class="co">#     cat("Response generated for Version:", version_url, "\n",</span></span>
+<span id="cb17-85"><a href="#cb17-85" aria-hidden="true" tabindex="-1"></a><span class="co">#         response$usage$total_tokens, "tokens used\n")</span></span>
+<span id="cb17-86"><a href="#cb17-86" aria-hidden="true" tabindex="-1"></a><span class="co">#   }</span></span>
+<span id="cb17-87"><a href="#cb17-87" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-88"><a href="#cb17-88" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Skip to next iteration if API call failed</span></span>
+<span id="cb17-89"><a href="#cb17-89" aria-hidden="true" tabindex="-1"></a><span class="co">#   if (is.null(response)) next</span></span>
+<span id="cb17-90"><a href="#cb17-90" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-91"><a href="#cb17-91" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Extract the CSV output from the response</span></span>
+<span id="cb17-92"><a href="#cb17-92" aria-hidden="true" tabindex="-1"></a><span class="co">#   csv_output &lt;- tryCatch(</span></span>
+<span id="cb17-93"><a href="#cb17-93" aria-hidden="true" tabindex="-1"></a><span class="co">#     {</span></span>
+<span id="cb17-94"><a href="#cb17-94" aria-hidden="true" tabindex="-1"></a><span class="co">#       response$choices$message.content</span></span>
+<span id="cb17-95"><a href="#cb17-95" aria-hidden="true" tabindex="-1"></a><span class="co">#     },</span></span>
+<span id="cb17-96"><a href="#cb17-96" aria-hidden="true" tabindex="-1"></a><span class="co">#     error = function(e) {</span></span>
+<span id="cb17-97"><a href="#cb17-97" aria-hidden="true" tabindex="-1"></a><span class="co">#       warning(paste("Failed to extract CSV content for Version:", version_url))</span></span>
+<span id="cb17-98"><a href="#cb17-98" aria-hidden="true" tabindex="-1"></a><span class="co">#       return(NULL)</span></span>
+<span id="cb17-99"><a href="#cb17-99" aria-hidden="true" tabindex="-1"></a><span class="co">#     }</span></span>
+<span id="cb17-100"><a href="#cb17-100" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb17-101"><a href="#cb17-101" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-102"><a href="#cb17-102" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Skip if CSV output is NULL</span></span>
+<span id="cb17-103"><a href="#cb17-103" aria-hidden="true" tabindex="-1"></a><span class="co">#   if (is.null(csv_output)) next</span></span>
+<span id="cb17-104"><a href="#cb17-104" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-105"><a href="#cb17-105" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Parse the CSV string into a data frame</span></span>
+<span id="cb17-106"><a href="#cb17-106" aria-hidden="true" tabindex="-1"></a><span class="co">#   parsed_csv &lt;- tryCatch(</span></span>
+<span id="cb17-107"><a href="#cb17-107" aria-hidden="true" tabindex="-1"></a><span class="co">#     {</span></span>
+<span id="cb17-108"><a href="#cb17-108" aria-hidden="true" tabindex="-1"></a><span class="co">#       read_csv(csv_output, show_col_types = FALSE)</span></span>
+<span id="cb17-109"><a href="#cb17-109" aria-hidden="true" tabindex="-1"></a><span class="co">#     },</span></span>
+<span id="cb17-110"><a href="#cb17-110" aria-hidden="true" tabindex="-1"></a><span class="co">#     error = function(e) {</span></span>
+<span id="cb17-111"><a href="#cb17-111" aria-hidden="true" tabindex="-1"></a><span class="co">#       warning(paste("Failed to parse CSV for Version:", version_url))</span></span>
+<span id="cb17-112"><a href="#cb17-112" aria-hidden="true" tabindex="-1"></a><span class="co">#       return(NULL)</span></span>
+<span id="cb17-113"><a href="#cb17-113" aria-hidden="true" tabindex="-1"></a><span class="co">#     }</span></span>
+<span id="cb17-114"><a href="#cb17-114" aria-hidden="true" tabindex="-1"></a><span class="co">#   )</span></span>
+<span id="cb17-115"><a href="#cb17-115" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-116"><a href="#cb17-116" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Skip if parsing failed</span></span>
+<span id="cb17-117"><a href="#cb17-117" aria-hidden="true" tabindex="-1"></a><span class="co">#   if (is.null(parsed_csv)) next</span></span>
+<span id="cb17-118"><a href="#cb17-118" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-119"><a href="#cb17-119" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Add additional metadata columns to parsed_csv</span></span>
+<span id="cb17-120"><a href="#cb17-120" aria-hidden="true" tabindex="-1"></a><span class="co">#   parsed_csv &lt;- parsed_csv %&gt;%</span></span>
+<span id="cb17-121"><a href="#cb17-121" aria-hidden="true" tabindex="-1"></a><span class="co">#     mutate(</span></span>
+<span id="cb17-122"><a href="#cb17-122" aria-hidden="true" tabindex="-1"></a><span class="co">#       Published = published_date,</span></span>
+<span id="cb17-123"><a href="#cb17-123" aria-hidden="true" tabindex="-1"></a><span class="co">#       Version = version_url,</span></span>
+<span id="cb17-124"><a href="#cb17-124" aria-hidden="true" tabindex="-1"></a><span class="co">#       DOI.unique = doi_unique,</span></span>
+<span id="cb17-125"><a href="#cb17-125" aria-hidden="true" tabindex="-1"></a><span class="co">#       version_stage = version_stage</span></span>
+<span id="cb17-126"><a href="#cb17-126" aria-hidden="true" tabindex="-1"></a><span class="co">#     ) %&gt;%</span></span>
+<span id="cb17-127"><a href="#cb17-127" aria-hidden="true" tabindex="-1"></a><span class="co">#     # Reorder columns to have metadata first</span></span>
+<span id="cb17-128"><a href="#cb17-128" aria-hidden="true" tabindex="-1"></a><span class="co">#     select(Published, Version, DOI.unique, version_stage, everything())</span></span>
+<span id="cb17-129"><a href="#cb17-129" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-130"><a href="#cb17-130" aria-hidden="true" tabindex="-1"></a><span class="co">#   # Save (if file does not yet exist) or append (if exists) the data to the CSV file</span></span>
+<span id="cb17-131"><a href="#cb17-131" aria-hidden="true" tabindex="-1"></a><span class="co">#   write_csv(parsed_csv, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))</span></span>
+<span id="cb17-132"><a href="#cb17-132" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb17-133"><a href="#cb17-133" aria-hidden="true" tabindex="-1"></a><span class="co">#   cat("Successfully processed Version:", version_url, "\n")</span></span>
+<span id="cb17-134"><a href="#cb17-134" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- # Old tables extractions -->
+<!-- ##### 1 API request by table -->
+<!-- ```{r} -->
+<!-- # Retrieve the list of version URLs to process -->
+<!-- csv_file <- "output_data/summary_of_findings/SR_SOF_confidence.csv" -->
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 3, "Version") -->
+<!-- length(versions_to_process) -->
+<!-- length(unique(versions_with_SOM$Version)) -->
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+<!--   # Extract the Summary of Findings section (as HTML) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+<!--   # Parse the SOM HTML content -->
+<!--   html_doc <- read_html(SOM_section_html) -->
+<!--   # Extract all table nodes -->
+<!--   tables <- html_doc %>% -->
+<!--     html_nodes("div.table") -->
+<!--   # Check if there are any tables found -->
+<!--   if(length(tables) == 0){ -->
+<!--     warning(paste("No tables found for Version:", version_url)) -->
+<!--     next  # Skip to the next iteration if no tables are found -->
+<!--   } -->
+<!--   # Iterate over each table within the current version -->
+<!--   for (i in seq_along(tables)) { -->
+<!--     # Extract the HTML content of the current table -->
+<!--     current_table_html <- tables[[i]] %>% html_node("table") %>% as.character() -->
+<!--     # Create the prompt for OpenAI for the current table -->
+<!--     prompt <- paste( -->
+<!--       "I have the following Cochrane Summary of Findings sections (as html). :\n\n", -->
+<!--       current_table_html, -->
+<!--       "\n\n In it, there are usually 2 columns about absolute effects or illustrative comparative risks; I am NOT interested in their information.", -->
+<!--       "For each outcome in the table, extract the following information as a CSV (1 column per information variable, 1 row per outcome; fill cells with `NA` if data is missing):\n", -->
+<!--       "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--       "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--       "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--       "- intervention: the experimental intervention\n", -->
+<!--       "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--       "- outcome: outcome\n", -->
+<!--       "- outcome_additional_info: if there is additional information about the outcome (e.g. scale, follow-up...) \n", -->
+<!--       "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+<!--       "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝). Possible values are: 'high', 'moderate', 'low', 'very low', 'NA'. Possibly, if it is unclear of you, you can also fill with 'unable to attribute'.\n", -->
+<!--       "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+<!--       sep = "" -->
+<!--     ) -->
+<!--     # Make the Chat Completion request -->
+<!--     response <- tryCatch( -->
+<!--       { -->
+<!--         create_chat_completion( -->
+<!--           model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--           messages = list( -->
+<!--             list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--             list(role = "user",   content = prompt) -->
+<!--           ), -->
+<!--           temperature = 0 -->
+<!--         ) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("OpenAI API request failed for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+<!--     # Inform about the response -->
+<!--     if (!is.null(response)) { -->
+<!--       cat("Response generated for Version:", version_url, "Table:", i, "\n", -->
+<!--           response$usage$total_tokens, "tokens used\n") -->
+<!--     } -->
+<!--     # Skip to next table if API call failed -->
+<!--     if (is.null(response)) next -->
+<!--     # Extract the CSV output -->
+<!--     csv_output <- tryCatch( -->
+<!--       { -->
+<!--         response$choices$message.content -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to extract CSV content for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+<!--     # Skip if CSV output is NULL -->
+<!--     if (is.null(csv_output)) next -->
+<!--     # Parse the CSV string into a data frame -->
+<!--     parsed_csv <- tryCatch( -->
+<!--       { -->
+<!--         read_csv(csv_output, show_col_types = FALSE) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to parse CSV for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+<!--     # Skip if parsing failed -->
+<!--     if (is.null(parsed_csv)) next -->
+<!--     # Add the additional metadata columns to parsed_csv -->
+<!--     parsed_csv <- parsed_csv %>% -->
+<!--       mutate( -->
+<!--         Published = published_date, -->
+<!--         Version = version_url, -->
+<!--         DOI.unique = doi_unique, -->
+<!--         version_stage = version_stage, -->
+<!--         SOM_table_number = i  # Add table number within the version -->
+<!--       ) %>% -->
+<!--       # Reorder columns to have metadata first -->
+<!--       select(Published, Version, DOI.unique, version_stage, SOM_table_number, everything()) -->
+<!--     # Save (if file does not yet exist) or append (if exist) the data to the CSV file -->
+<!--     write_csv(parsed_csv, file=csv_file, append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     cat("Successfully processed Version:", version_url, "Table:", i, "\n") -->
+<!--   } -->
+<!-- } -->
+<!-- # View the consolidated dataframe -->
+<!-- temp <- read_csv(csv_file) -->
+<!-- length(unique(temp$Version)) -->
+<!-- unique(temp$certainty_of_evidence) -->
+<!-- ``` -->
+<!-- #### Only essential info -->
+<!-- ```{r} -->
+<!-- csv_file <- "output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv" -->
+<!-- versions_with_SOM <- read_csv(csv_file) -->
+<!-- glimpse(versions_with_SOM) -->
+<!-- ``` -->
+<!-- trying to do a list of the tables (Donner selection criteria pour qu'il sache le type de study ?) -->
+<!-- ```{r} -->
+<!-- version_url <- versions_with_SOM$Version[1] -->
+<!-- # Extract the Summary of Sindings section (as html) -->
+<!-- SOM_section_html <- versions_with_SOM %>% -->
+<!--   filter(Version == version_url) %>% -->
+<!--   pull(SOM_html_string) -->
+<!-- html_doc <- read_html(SOM_section_html) -->
+<!-- tables <- html_doc %>% -->
+<!--   html_nodes("div.table") -->
+<!-- # Create a data frame with table number and HTML content of each table -->
+<!-- table_df <- data.frame( -->
+<!--   SoF_table_number = seq_along(tables), -->
+<!--   SoF_table_content = sapply(tables, as.character), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Define a Function to Extract the Third Row from a Table -->
+<!-- extract_third_row <- function(table_node) { -->
+<!--   rows <- table_node %>% html_nodes("tr") -->
+<!--   if (length(rows) >= 3) { -->
+<!--     third_row <- rows[3] %>% html_text(trim = TRUE) -->
+<!--     return(third_row) -->
+<!--   } else { -->
+<!--     return(NA_character_) -->
+<!--   } -->
+<!-- } -->
+<!-- # Process the Data Frame to Extract Third Rows from Tables -->
+<!-- global_df <- versions_with_SOM %>% -->
+<!--   head(10) %>% -->
+<!--   # Step 1: Parse 'SOM_html_string' as HTML safely -->
+<!--   mutate( -->
+<!--     html_doc = map(SOM_html_string, ~ { -->
+<!--       if (grepl("^\\s*<", .x)) { -->
+<!--         tryCatch(read_html(.x), error = function(e) NULL) -->
+<!--       } else { -->
+<!--         NULL -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+<!--   # Step 2: Extract all table nodes from the HTML document -->
+<!--   mutate( -->
+<!--     tables = map(html_doc, ~ { -->
+<!--       if (!is.null(.x)) { -->
+<!--         # Adjust the selector based on your HTML structure -->
+<!--         html_nodes(.x, "div.table, table") -->
+<!--       } else { -->
+<!--         list() -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+<!--   # Step 3: Extract the third row from each table -->
+<!--   mutate( -->
+<!--     third_rows = map(tables, ~ map_chr(.x, extract_third_row)) -->
+<!--   ) %>% -->
+<!--   # Step 4: Select only the necessary columns -->
+<!--   select(Version, third_rows) %>% -->
+<!--   # Step 5: Unnest the list of third rows into individual rows -->
+<!--   unnest(third_rows) %>% -->
+<!--   # Step 6: Assign a table number within each Version -->
+<!--   group_by(Version) %>% -->
+<!--   mutate(SoF_table_number = row_number()) %>% -->
+<!--   ungroup() %>% -->
+<!--   # Step 7: Rename the third row column for clarity -->
+<!--   rename(SoF_third_row = third_rows) -->
+<!-- # do all the rows contain "outcome" ? -->
+<!-- test <- global_df %>% -->
+<!--   filter(!grepl("Outcome", SoF_third_row)) -->
+<!-- nrow(test) -->
+<!-- nrow(global_df) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Define a Function to Extract the Third Row from a Table -->
+<!-- extract_fourth_row <- function(table_node) { -->
+<!--   rows <- table_node %>% html_nodes("tr") -->
+<!--   if (length(rows) >= 4) { -->
+<!--     third_row <- rows[4] %>% html_text(trim = TRUE) -->
+<!--     return(third_row) -->
+<!--   } else { -->
+<!--     return(NA_character_) -->
+<!--   } -->
+<!-- } -->
+<!-- # Process the Data Frame to Extract Third Rows from Tables -->
+<!-- global_df_4 <- versions_with_SOM %>% -->
+<!--   # Step 1: Parse 'SOM_html_string' as HTML safely -->
+<!--   mutate( -->
+<!--     html_doc = map(SOM_html_string, ~ { -->
+<!--       if (grepl("^\\s*<", .x)) { -->
+<!--         tryCatch(read_html(.x), error = function(e) NULL) -->
+<!--       } else { -->
+<!--         NULL -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+<!--   # Step 2: Extract all table nodes from the HTML document -->
+<!--   mutate( -->
+<!--     tables = map(html_doc, ~ { -->
+<!--       if (!is.null(.x)) { -->
+<!--         # Adjust the selector based on your HTML structure -->
+<!--         html_nodes(.x, "div.table, table") -->
+<!--       } else { -->
+<!--         list() -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+<!--   # Step 3: Extract the third row from each table -->
+<!--   mutate( -->
+<!--     fourth_rows = map(tables, ~ map_chr(.x, extract_fourth_row)) -->
+<!--   ) %>% -->
+<!--   # Step 4: Select only the necessary columns -->
+<!--   select(Version, fourth_rows) %>% -->
+<!--   # Step 5: Unnest the list of third rows into individual rows -->
+<!--   unnest(fourth_rows) %>% -->
+<!--   # Step 6: Assign a table number within each Version -->
+<!--   group_by(Version) %>% -->
+<!--   mutate(SoF_table_number = row_number()) %>% -->
+<!--   ungroup() %>% -->
+<!--   # Step 7: Rename the third row column for clarity -->
+<!--   rename(SoF_fourth_row = fourth_rows) -->
+<!-- # do all the rows contain "outcome" ? -->
+<!-- test <- global_df_4 %>% -->
+<!--   filter(!grepl("Outcome", SoF_fourth_row)) -->
+<!-- nrow(test) -->
+<!-- nrow(global_df) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Load necessary libraries -->
+<!-- library(rvest) -->
+<!-- library(dplyr) -->
+<!-- library(readr)  # For read_csv -->
+<!-- # Initialize a dataframe to store all results -->
+<!-- global_results <- data.frame( -->
+<!--   #Published = date(), -->
+<!--   Version = character(), -->
+<!--   DOI.unique = character(), -->
+<!--   version_stage = character(), -->
+<!--   SOM_table_number = integer(), -->
+<!--   SOM_title = character(), -->
+<!--   patient_population = character(), -->
+<!--   settings = character(), -->
+<!--   intervention = character(), -->
+<!--   comparison = character(), -->
+<!--   outcome = character(), -->
+<!--   outcome_additional_info = character(), -->
+<!--   outcome_reported = character(), -->
+<!--   number_of_participants = integer(), -->
+<!--   nb_RCTs = integer(), -->
+<!--   nb_NRSs = integer(), -->
+<!--   nb_total_studies = integer(), -->
+<!--   certainty_of_evidence = character(), -->
+<!--   relative_effect = numeric(), -->
+<!--   relative_effect_lb = numeric(), -->
+<!--   relative_effect_ub = numeric(), -->
+<!--   metric_used = character(), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+<!-- # Retrieve the list of version URLs to process -->
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 3, "Version") -->
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+<!--   # Extract the Summary of Findings section (as HTML) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+<!--   # Parse the SOM HTML content -->
+<!--   html_doc <- read_html(SOM_section_html) -->
+<!--   # Extract all table nodes -->
+<!--   tables <- html_doc %>% -->
+<!--     html_nodes("div.table") -->
+<!--   # Check if there are any tables found -->
+<!--   if(length(tables) == 0){ -->
+<!--     warning(paste("No tables found for Version:", version_url)) -->
+<!--     next  # Skip to the next iteration if no tables are found -->
+<!--   } -->
+<!--   # Iterate over each table within the current version -->
+<!--   for (i in seq_along(tables)) { -->
+<!--     # Extract the HTML content of the current table -->
+<!--     current_table_html <- tables[[i]] %>% html_node("table") %>% as.character() -->
+<!--     # Create the prompt for OpenAI for the current table -->
+<!--     prompt <- paste( -->
+<!--       "I have the following Cochrane Summary of Findings table (as html):\n\n", -->
+<!--       current_table_html, -->
+<!--       "\n\n In it, there are usually 2 columns about absolute effects or illustrative comparative risks; I am NOT interested in their information.  Especially, do NOT confuse what is reported in these 2 columns with the relative_effect, relative_effect_lb or relative_effect_ub (see below).", -->
+<!--       "For each outcome in the table, extract the following information as a CSV (1 column per information variable, 1 row per outcome; fill cells with `NA` if data is missing):\n", -->
+<!--       "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--       "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--       "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--       "- intervention: the experimental intervention\n", -->
+<!--       "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--       "- outcome: outcome (generally in bold, but not always)\n", -->
+<!--       "- outcome_additional_info: if there is additional information about the outcome\n", -->
+<!--       "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+<!--       "- number_of_participants: Number of Participants (an integer)\n", -->
+<!--       "- nb_RCTs: if reported, number of randomized controlled trial studies (an integer)\n", -->
+<!--       "- nb_NRSs: if reported, number of non randomized studies (an integer)\n", -->
+<!--       "- nb_total_studies: total number of studies  (an integer); sometimes you need to add the different sorts of studies together\n", -->
+<!--       "if only the number of studies is reported but you have no information on nb_RCTs nor nb_NRSs, leeave them both 'NA'\n", -->
+<!--       "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝)\n", -->
+<!--       "- relative_effect: Relative Effect (e.g., RR, OR, HR, ROR, RHR...), as a numeric. Do NOT extract absolute effects or comparative risks.\n", -->
+<!--       "- relative_effect_lb: Relative Effect 95% confidence interval lower bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--       "- relative_effect_ub: Relative Effect 95% confidence interval upper bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--       "- metric_used: Metric Used for Relative Effect (RR, OR, HR, ROR, RHR...)\n\n", -->
+<!--       "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+<!--       sep = "" -->
+<!--     ) -->
+<!--     # Make the Chat Completion request -->
+<!--     response <- tryCatch( -->
+<!--       { -->
+<!--         create_chat_completion( -->
+<!--           model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--           messages = list( -->
+<!--             list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--             list(role = "user",   content = prompt) -->
+<!--           ), -->
+<!--           temperature = 0 -->
+<!--         ) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("OpenAI API request failed for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+<!--     # Inform about the response -->
+<!--     if (!is.null(response)) { -->
+<!--       cat("Response generated for Version:", version_url, "Table:", i, "\n", -->
+<!--           response$usage$total_tokens, "tokens used\n") -->
+<!--     } -->
+<!--     # Skip to next table if API call failed -->
+<!--     if (is.null(response)) next -->
+<!--     # Extract the CSV output -->
+<!--     csv_output <- tryCatch( -->
+<!--       { -->
+<!--         response$choices$message.content -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to extract CSV content for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+<!--     # Skip if CSV output is NULL -->
+<!--     if (is.null(csv_output)) next -->
+<!--     # Parse the CSV string into a data frame -->
+<!--     parsed_csv <- tryCatch( -->
+<!--       { -->
+<!--         read_csv(csv_output, show_col_types = FALSE) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to parse CSV for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+<!--     # Skip if parsing failed -->
+<!--     if (is.null(parsed_csv)) next -->
+<!--     # Add the additional metadata columns to parsed_csv -->
+<!--     parsed_csv <- parsed_csv %>% -->
+<!--       mutate( -->
+<!--         Published = published_date, -->
+<!--         Version = version_url, -->
+<!--         DOI.unique = doi_unique, -->
+<!--         version_stage = version_stage, -->
+<!--         SOM_table_number = i  # Add table number within the version -->
+<!--       ) %>% -->
+<!--       # Reorder columns to have metadata first -->
+<!--       select(Published, Version, DOI.unique, version_stage, SOM_table_number, everything()) -->
+<!--     # Append the parsed data to the global results -->
+<!--     global_results <- bind_rows(global_results, parsed_csv) -->
+<!--     cat("Successfully processed Version:", version_url, "Table:", i, "\n") -->
+<!--   } -->
+<!-- } -->
+<!-- # View the consolidated dataframe -->
+<!-- print(global_results) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Initialize an empty data frame to store results -->
+<!-- global_results <- data.frame( -->
+<!--   Version = character(), -->
+<!--   SOM_title = character(), -->
+<!--   outcome = character(), -->
+<!--   outcome_additional_info = character(), -->
+<!--   certainty_of_evidence = character(), -->
+<!--   number_of_participants = numeric(), -->
+<!--   number_of_studies = numeric(), -->
+<!--   relative_effect = numeric(), -->
+<!--   relative_effect_lb = numeric(), -->
+<!--   relative_effect_ub = numeric(), -->
+<!--   metric_used = character(), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+<!-- # Path to the CSV file -->
+<!-- csv_file <- "global_summary_of_findings.csv" -->
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 1, "Version") -->
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+<!--   # Extract the Summary of Sindings section (as html) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+<!--   # Create the prompt for OpenAI -->
+<!--   prompt <- paste( -->
+<!--     "I have the following Cochrane Summary of Findings section. I am interested in their Summary of Findings tables (there might be several tables in one section).\n\n", -->
+<!--     SOM_section_html, -->
+<!--     "\n\nFor each table, can you extract the following information as a CSV (1 column per information variable, 1 row per outcome; you can fill cells with `NA` if data is missing):\n", -->
+<!--     "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--     "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--     "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--     "- intervention: the experimental intervention\n", -->
+<!--     "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--     "- outcome: outcome (generally in bold, but not always)\n", -->
+<!--     "- outcome_additional_info: if there is additional information about the outcome\n", -->
+<!--     "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+<!--     "- number_of_participants: Number of Participants\n", -->
+<!--     "- nb_RCTs: if reported, number of randomized controlled trial studies\n", -->
+<!--     "- nb_NRSs: if reported, number of non randomized studies\n", -->
+<!--     "- nb_total_studies: total number of studies (sometimes you need to add the different sorts of studies together)\n", -->
+<!--     "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝)\n", -->
+<!--     "- relative_effect: Relative Effect (e.g., RR, OR, HR, ROR, RHR...), as a numeric. Do NOT extract absolute effects or comparative risks.\n", -->
+<!--     "- relative_effect_lb: Relative Effect 95% confidence interval lower bound, as a numeric.Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- relative_effect_ub: Relative Effect 95% confidence interval upper bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- metric_used: Metric Used for Relative Effect (RR, OR, HR, ROR, RHR...)\n\n", -->
+<!--     "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+<!--     # AND IF CANNOT FIND A TABLE -->
+<!--     sep = "" -->
+<!--   ) -->
+<!--   # Make the Chat Completion request -->
+<!--   response <- tryCatch( -->
+<!--     { -->
+<!--       create_chat_completion( -->
+<!--         model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--         messages = list( -->
+<!--           list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--           list(role = "user",   content = prompt) -->
+<!--         ), -->
+<!--         temperature = 0 -->
+<!--       ) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("OpenAI API request failed for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+<!--   cat("Response generated for version\n", version_url, "\n", response$usage$total_tokens, "tokens used\n") -->
+<!--   # Skip to next iteration if API call failed -->
+<!--   if (is.null(response)) next -->
+<!--   # Extract the CSV output -->
+<!--   csv_output <- tryCatch( -->
+<!--     { -->
+<!--       response$choices$message.content -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to extract CSV content for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+<!--   # Skip if CSV output is NULL -->
+<!--   if (is.null(csv_output)) next -->
+<!--   # Parse the CSV string into a data frame -->
+<!--   parsed_csv <- tryCatch( -->
+<!--     { -->
+<!--       read_csv(csv_output, show_col_types = FALSE) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to parse CSV for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+<!--   # Skip if parsing failed -->
+<!--   if (is.null(parsed_csv)) next -->
+<!--   # Add the additional metadata columns to parsed_csv -->
+<!--   parsed_csv <- parsed_csv %>% -->
+<!--     mutate( -->
+<!--       Published = published_date, -->
+<!--       Version = version_url, -->
+<!--       DOI.unique = doi_unique, -->
+<!--       version_stage = version_stage -->
+<!--       ) %>% -->
+<!--     # Reorder columns to have metadata first -->
+<!--     select(Published, Version, DOI.unique, version_stage, everything()) -->
+<!--   # Append the parsed data to the global results -->
+<!--   global_results <- bind_rows(global_results, parsed_csv) -->
+<!--   cat("Successfully processed URL:", full_url, "\n") -->
+<!-- } -->
+<!-- # Optional: Display the collected data -->
+<!-- print(global_results) -->
+<!-- # Define the output CSV file path -->
+<!-- output_csv_path <- "global_summary_of_findings.csv" -->
+<!-- # Write the global results to the CSV file -->
+<!-- write_csv(global_results, output_csv_path) -->
+<!-- cat("All data has been written to", output_csv_path, "\n") -->
+<!-- glimpse(response$usage$total_tokens) -->
+<!-- response$choices$message.content -->
+<!-- ``` -->
+<!-- #### More complex -->
+<!-- ```{r} -->
+<!-- # Initialize an empty data frame to store results -->
+<!-- global_results <- data.frame( -->
+<!--   Version = character(), -->
+<!--   SOM_title = character(), -->
+<!--   outcome = character(), -->
+<!--   outcome_additional_info = character(), -->
+<!--   certainty_of_evidence = character(), -->
+<!--   number_of_participants = numeric(), -->
+<!--   number_of_studies = numeric(), -->
+<!--   relative_effect = numeric(), -->
+<!--   relative_effect_lb = numeric(), -->
+<!--   relative_effect_ub = numeric(), -->
+<!--   metric_used = character(), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+<!-- # Path to the CSV file -->
+<!-- csv_file <- "global_summary_of_findings.csv" -->
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 1, "Version") -->
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+<!--   # Extract the Summary of Sindings section (as html) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+<!--   # Create the prompt for OpenAI -->
+<!--   prompt <- paste( -->
+<!--     "I have the following Cochrane Summary of Findings section. I am interested in their Summary of Findings tables (there might be several tables in one section).\n\n", -->
+<!--     SOM_section_html, -->
+<!--     "\n\nFor each table, can you extract the following information as a CSV (1 column per information variable, 1 row per outcome; you can fill cells with `NA` if data is missing):\n", -->
+<!--     "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--     "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--     "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--     "- intervention: the experimental intervention\n", -->
+<!--     "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--     "- outcome: outcome (generally in bold, but not always)\n", -->
+<!--     "- outcome_additional_info: if there is additional information about the outcome\n", -->
+<!--     "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+<!--     "- number_of_participants: Number of Participants\n", -->
+<!--     "- nb_RCTs: if reported, number of randomized controlled trial studies\n", -->
+<!--     "- nb_NRSs: if reported, number of non randomized studies\n", -->
+<!--     "- nb_total_studies: total number of studies (sometimes you need to add the different sorts of studies together)\n", -->
+<!--     "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝)\n", -->
+<!--     "- relative_effect: Relative Effect (e.g., RR, OR, HR, ROR, RHR...), as a numeric. Do NOT extract absolute effects or comparative risks.\n", -->
+<!--     "- relative_effect_lb: Relative Effect 95% confidence interval lower bound, as a numeric.Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- relative_effect_ub: Relative Effect 95% confidence interval upper bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- metric_used: Metric Used for Relative Effect (RR, OR, HR, ROR, RHR...)\n\n", -->
+<!--     "- reason_for_downgrading: usually in the <tfoot> of the concerned table (or at its bottom), there are explanations for the reason the certainty of evidence has been downgraded, corresponding to one or several superscript letters or numbers next to the certainty of evidence. Attribute the author's explanations to one or more of the 5 following reasons (based on GRADE considerations): -->
+<!--         - 'Risk of bias': linked for instance to limitations in the design and implementation (allocation sequence concealment, selective outcome reporting...); -->
+<!--         - 'Inconsistency': unexplained statistical heterogeneity or inconsistency of results, lack of confidence intervals overlap, differences in point estimate, between-study variance...; -->
+<!--         - 'Indirectness of evidence': if the studies adress quite different patients/intervention/comparison/outcome/questions; -->
+<!--         - 'Imprecision': for instance due to low sample size or number of events, large confidence interval...; -->
+<!--         - 'Publication bias': selective reporting of studies or outcomes. -->
+<!--     Sometimes there are no reasons, then just write 'NA'. If there is a reason that you cannot attribute to one of the 5 categories, write 'unable to attribute reason:' followed by the author's description of the reason in the cell\n\n", -->
+<!--     "- reason_for_upgrading: usually in the <tfoot> of the concerned table (or at its bottom), there are explanations for the reason the certainty of evidence has been upgraded, corresponding to one or several superscript letters or numbers next to the certainty of evidence. The reasons can be: -->
+<!--         - 'Large effects': large effect of the intervention; -->
+<!--         - 'Dose-response gradient': Dose-response gradient of the effect; -->
+<!--         - 'Plausible residual opposing confounding': when there is plausible confounding biases that likely under-estimate the intervention effect. -->
+<!--     Here again, there can be several reasons. If there is no reason, write 'NA'. If there is a reason that you cannot attribute to one of the 5 categories, write 'unable to attribute reason:' followed by the author's description of the reason in the cell \n\n", -->
+<!--     "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+<!--     # AND IF CANNOT FIND A TABLE -->
+<!--     sep = "" -->
+<!--   ) -->
+<!--   # Make the Chat Completion request -->
+<!--   response <- tryCatch( -->
+<!--     { -->
+<!--       create_chat_completion( -->
+<!--         model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--         messages = list( -->
+<!--           list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--           list(role = "user",   content = prompt) -->
+<!--         ), -->
+<!--         temperature = 0 -->
+<!--       ) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("OpenAI API request failed for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+<!--   cat("Response generated for version\n", version_url, "\n", response$usage$total_tokens, "tokens used\n") -->
+<!--   # Skip to next iteration if API call failed -->
+<!--   if (is.null(response)) next -->
+<!--   # Extract the CSV output -->
+<!--   csv_output <- tryCatch( -->
+<!--     { -->
+<!--       response$choices$message.content -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to extract CSV content for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+<!--   # Skip if CSV output is NULL -->
+<!--   if (is.null(csv_output)) next -->
+<!--   # Parse the CSV string into a data frame -->
+<!--   parsed_csv <- tryCatch( -->
+<!--     { -->
+<!--       read_csv(csv_output, show_col_types = FALSE) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to parse CSV for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+<!--   # Skip if parsing failed -->
+<!--   if (is.null(parsed_csv)) next -->
+<!--   # Add the additional metadata columns to parsed_csv -->
+<!--   parsed_csv <- parsed_csv %>% -->
+<!--     mutate( -->
+<!--       Published = published_date, -->
+<!--       Version = version_url, -->
+<!--       DOI.unique = doi_unique, -->
+<!--       version_stage = version_stage -->
+<!--       ) %>% -->
+<!--     # Reorder columns to have metadata first -->
+<!--     select(Published, Version, DOI.unique, version_stage, everything()) -->
+<!--   # Append the parsed data to the global results -->
+<!--   global_results <- bind_rows(global_results, parsed_csv) -->
+<!--   cat("Successfully processed URL:", full_url, "\n") -->
+<!-- } -->
+<!-- # Optional: Display the collected data -->
+<!-- print(global_results) -->
+<!-- # Define the output CSV file path -->
+<!-- output_csv_path <- "global_summary_of_findings.csv" -->
+<!-- # Write the global results to the CSV file -->
+<!-- write_csv(global_results, output_csv_path) -->
+<!-- cat("All data has been written to", output_csv_path, "\n") -->
+<!-- glimpse(response$usage$total_tokens) -->
+<!-- response$choices$message.content -->
+<!-- ``` -->
+<!-- ### Old table extraction -->
+<!-- ```{r} -->
+<!-- f_clean_SOM_table <- function(table_node, version_url){ -->
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% -->
+<!--     filter(Version == version_url) -->
+<!--   # If there is a Summary of Findings table on the webpage -->
+<!--   if (!is.na(table_node_body)) { -->
+<!--     # Replace <br> tags within the table with simple spaces for cleaner output -->
+<!--     SOM_table <- table_node_body %>% -->
+<!--       as.character() %>%              # Convert the table HTML node to a character string -->
+<!--       gsub("<br\\s*/?>", "\n", .) %>% # Replace <br> or <br/> with a single space -->
+<!--       read_html() %>%                 # Parse the modified table back into a html document -->
+<!--       html_node("tbody") %>%          # Re-select the table (now cleaned) -->
+<!--       html_table()                    # Parse without the <br> tags -->
+<!--     # Get Title and PICO of the Summary of Findings Table -->
+<!--     SOM_title = SOM_table[[1, 1]] -->
+<!--     PICO = SOM_table[[2, 1]] -->
+<!--     # Keep only lines with  "⊕" or "⊝", indicating a reported certainty of the evidence (GRADE) -->
+<!--     filtered_df <- SOM_table %>% -->
+<!--       filter( -->
+<!--         apply(., 1, function(row) any(grepl("⊕|⊝", row))) & -->
+<!--           # No more than 6 occurrences of "⊕" or "⊝" on 1 line => because sometimes descrption of all GRADEs levels of evidence on the last line -->
+<!--           apply(., 1, function(row) sum(str_count(row, "⊕|⊝")) <= 6) -->
+<!--         ) -->
+<!--     # Identify the column containing "⊕" or "⊝" -->
+<!--     columns_to_keep <- sapply(filtered_df, function(column) any(grepl("⊕|⊝", column))) -->
+<!--     # Keep the first column (outcome)and the column with "⊕" or "⊝" -->
+<!--     filtered_df <- filtered_df[, c(TRUE, columns_to_keep[-1])] -->
+<!--     # Rename columns -->
+<!--     colnames(filtered_df)[1] <- "outcome"  # Rename the first column to "outcome" -->
+<!--     colnames(filtered_df)[2] <- "certainty"  # Rename the identified column to "certainty" -->
+<!--     # Add additional information -->
+<!--     filtered_df <- filtered_df %>% -->
+<!--       mutate( -->
+<!--         SOM_title = SOM_title, -->
+<!--         PICO = PICO, -->
+<!--         Published = version_data$Published, -->
+<!--         Version = version_data$Version, -->
+<!--         DOI.unique  = version_data$DOI.unique, -->
+<!--         version_stage = version_data$version_stage -->
+<!--         ) -->
+<!--     # get first line of table (in 3d row, row 1 and 2 are title and PICO), with DOI and version -->
+<!--     first_line <- SOM_table[3, ] -->
+<!--     first_line$DOI.unique <- version_data$DOI.unique -->
+<!--     first_line$Version <- version_data$Version -->
+<!--     # get table footer, with DOI and version -->
+<!--     footer <- data.frame(footer = table_node_foot) -->
+<!--     footer$DOI.unique <- version_data$DOI.unique -->
+<!--     footer$Version <- version_data$Version -->
+<!--     print(url) -->
+<!--     print(filtered_df) -->
+<!--     write_csv(footer, file="output_data/summary_of_findings/SR_SOM_footers.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     write_csv(first_line, file="output_data/summary_of_findings/SR_SOM_col_names.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     # Append to CSV file -->
+<!--     write_csv(filtered_df, file = csv_file, append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     } -->
+<!--   else { -->
+<!--     filtered_df <- tibble( -->
+<!--       outcome = NA, -->
+<!--       certainty = NA, -->
+<!--       SOM_title = "No Summary of Findings", -->
+<!--       PICO = NA, -->
+<!--       Published = version_data$Published, -->
+<!--       Version = version_data$Version, -->
+<!--       DOI.unique  = version_data$DOI.unique, -->
+<!--       version_stage = version_data$version_stage -->
+<!--     ) -->
+<!--     # get first line of table (in 3d row, row 1 and 2 are title and PICO), with DOI and version -->
+<!--     first_line <- data.frame(outcome = "No Summary of Findings") -->
+<!--     first_line$DOI.unique <- version_data$DOI.unique -->
+<!--     first_line$Version <- version_data$Version -->
+<!--     # get table footer, with DOI and version -->
+<!--     footer <- data.frame(footer = "No Summary of Findings") -->
+<!--     footer$DOI.unique <- version_data$DOI.unique -->
+<!--     footer$Version <- version_data$Version -->
+<!--     print(url) -->
+<!--     print("No SOM table") -->
+<!--     write_csv(footer, file="output_data/summary_of_findings/SR_SOM_footers.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     write_csv(first_line, file="output_data/summary_of_findings/SR_SOM_col_names.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     # Append to CSV file -->
+<!--     write_csv(filtered_df, file = csv_file, append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     } -->
+<!-- } -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # Process each version and append the result to the CSV file -->
+<!-- for (version_url in versions_to_process) { -->
+<!--   # Clean the URL by removing the "https://doi.org/" part -->
+<!--   url <- sub("https://doi.org/", "", version_url) -->
+<!--   # Construct the full URL for the review version history -->
+<!--   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", url) -->
+<!--   # Get the html code of the webpage page -->
+<!--   doc <- f_get_html_page(url) -->
+<!--   # Extract the table as an HTML node -->
+<!--   table_node_body <- doc %>% -->
+<!--     html_node("table.summary-of-findings.framed") %>% -->
+<!--     html_node("tbody") -->
+<!--   # Extract text from table foot (details about decision to downgrade confidence) -->
+<!--   table_node_foot <- doc %>% -->
+<!--     html_node("table.summary-of-findings.framed") %>% -->
+<!--     html_node("tfoot") %>% -->
+<!--     html_text2() -->
+<!--  f_clean_SOM_table(table_node, version_url) -->
+<!-- } -->
+<!-- ``` -->
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

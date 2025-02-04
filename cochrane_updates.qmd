@@ -1,0 +1,1854 @@
+---
+title: "Get Cochrane Systematic Reviews Data"
+code-fold: true
+toc: true
+---
+
+This page presents the procedure and code to gather data from the Cochrane Systematic Reviews Database, mainly through webs crapping.
+
+<!-- TBD:  -->
+
+<!--   -   CHANGER processed_data en versions_with_events; l'enregistrer non pas à la source mais dans folder versions -->
+
+<!--   -   VOIR LES 34 SR versions not processed -->
+
+<!--   -   numeroter protocols -->
+
+```{r setup, include=T, warning=F, message=F, results=F}
+knitr::opts_chunk$set(warning=F, message=F, results=F, fig.align = "center",  dev='svg')
+# Load the function file
+source("functions.R")
+#included:
+#-function to save csv f_save_csv_files
+#-function to identify URLS that have not yet been processed during scrapping f_get_urls_to_process
+#-function to load a web page, with given URL f_get_html_page
+#-set the default scale_color and scale_fill to viridis theme
+#-loads the core tidyverse package
+
+library(openai)
+library(DT) # for interactive table
+
+# Set theme for graphs
+theme_set(
+  theme_classic() +
+  theme(
+    panel.grid.major.y = element_line(), #no vertical lines by default
+    #text = element_text(family = "Times New Roman"), #default font
+    plot.title = element_text(face="bold") #graphs titles in bolds
+    )
+  )
+```
+
+# Load Cochrane reviews dataset
+
+This work focuses on systematic reviews in the Cochrane library. We just focus on Reviews on Interventions (8976 reviews), excluding reviews labelled Diagnostic (193), Overview (70), Methodology (45), Qualitative (30), Prognosis (21), Rapid (13), Prototype (10). 
+
+The reviews data were downloaded as csv file on Cochrane Database of Systematic Reviews [webpage](https://www.cochranelibrary.com/cdsr/reviews){target="_blank"} on January 22, 2025.
+
+JE PENSE ENLEVER ABSTRACT EST OK; AUSSI JE PENSE ON PEUT GARDER 1 SEUL ENTRE DOI/URL
+
+```{r prepare_CDSR_dataset}
+# Load the downloaded database of cochrane systematic reviews on interventions
+cochrane_dataset <- read.csv("source_data/cochrane_data_base_2025_01_22/review_type/SR_Interventions.csv")
+glimpse(cochrane_dataset) #quick look at the data
+
+# Remove columns that we do not study
+cochrane_dataset <- cochrane_dataset %>%
+  select(-c(
+    "Cochrane.Review.ID", # this is equal to the last part of the DOI, bringing no further information
+    "Source", # always "Cochrane Database of Systematic Reviews"
+    "Issue", # integer between 1-12, representing the month of publication
+    "Publisher", # always "John Wiley & Sons, Ltd"
+    "ISSN", # always "1465-1858"
+    # Items that can be interesting for further analysis, but that we remove for now to make data lighter
+    "Author.s.", 
+    "Keywords", 
+    "Cochrane.Review.Group.Code" # 66 different review groups ("Childhood Cancer", "Stroke"...)
+    ))
+
+# The dataset only reports the latest version of each SR, but we will study every version of each SR
+# the dataset only reports the DOI of the latest version (e.g. "10.1002/14651858.CD009730.pub3")
+# each version DOI of a same SR only differs by the ".pubN" suffix
+# we create a DOI.unique which will identify each SR, whatever the version, by removing the ".pubN" suffix
+cochrane_dataset$DOI.unique <- gsub("\\.pub\\d+", "", cochrane_dataset$DOI)
+
+# See the remaning items: "Title", "Year", "Abstract", "DOI", "URL", "DOI.unique"
+glimpse(cochrane_dataset)
+
+# Reorder columns, rename URL to make it explicit it relates to a particular version
+cochrane_dataset <- cochrane_dataset %>%
+  select(c(Year, DOI.unique, URL_version = URL, Title, Abstract, DOI))
+```
+
+
+# Get all versions of reviews 
+
+The downloaded database only reports the latest version of each systematic review. But we want data on all published versions, to study changes between past and current versions on a same research question, and to see the evolution of Cochrane database content through time.
+
+The history of versions is accessible on each systematic review webpage, below the title (go for instance on [this one](https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006919.pub5){target="_blank"} to see). The history of versions webpage (see [here](https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006919.pub5/information#versionTable){target="_blank"} for instance) then presents a table with all versions and their unique DOI.
+
+Below is the code to
+
+  -   go on the history of versions webpage of a given Systematic Review
+  -   get the reported data for each of its particular versions (Publication date, Title, Stage, Authors, URL)
+  -   reiterate of the 8976 reviews of the database (as of January 22, 2025).
+
+::: panel-tabset
+## Scrap versions updates data
+
+```{r functions_for_versions_scrapping}
+# Functions used for extracting the versions data during scrapping:
+
+# Function to check if a string of characters is a date; returns TRUE/FALSE
+is_date <- function(string) {
+  !is.na(as.Date(string, format = "%Y %b %d"))
+}
+
+# Function to clean an extracted table and standardize it to correct format
+clean_table <- function(table, DOI.unique){
+  
+  # Checks if there actually was a version history version to download
+  if (!is.na(table)) {
+    
+    # Convert the table to a data frame
+    table_data <- xml2::xml_find_all(table, ".//tr") %>%
+      purrr::map_df(~ {
+        cells <- xml_find_all(.x, ".//th | .//td")
+        setNames(as.list(xml_text(cells)), xml_name(cells))
+      })
+    
+    # Use the first row as column names and remove first row (now used as column names)
+    colnames(table_data) <- table_data[1, ]
+    table_data <- table_data[-1, ]
+    
+    # Remove unnamed columns (those with blank or NA names) and 
+    # clean the remaining ones (remove extra spaces)
+    table_data <- table_data[, !is.na(colnames(table_data)) & colnames(table_data) != ""]
+    colnames(table_data) <- trimws(colnames(table_data)) # Base R method to remove leading/trailing spaces
+    
+    # Sanitize text to escape quotation marks
+    # otherwise problems in columns delimitations, when text contains ' " '
+    table_data <- table_data %>%
+      mutate(across(everything(), ~ gsub('"', '""', .))) # Escape double quotes for  CSV compatibility
+    #escapes double quotation marks (") by doubling them (""), which is the correct way to handle quotes in CSV files
+    
+    # Remove rows where "Title" item is empty
+    table_data <- table_data %>% filter(Title != "")
+    
+    # Fill Version column NAs with the previous non-NA value
+    table_data <- table_data %>% fill(Version, .direction = "down")
+    
+    # Extract version events data into a revisions table, and correctly name their column names
+    revisions <- table_data %>% filter(Published=="") %>% select(-Published)
+    colnames(revisions) <-c("Revision_date", "Event", "Description", "Version") 
+    
+    # Remove lines where no date in the Revision_date column of revisions tables
+    revisions <- revisions %>% filter(sapply(Revision_date, is_date))
+    
+    # Remove rows where Publication date is empty in the table_data
+    table_data <- table_data %>% filter(Published != "")
+    
+    # now join the 2 tables for full description of all revision events for each update
+    full_data <- left_join(table_data, revisions, by="Version")
+    
+    # now adds the unique DOI ID of the Systematic Review
+    full_data$DOI.unique <- DOI.unique
+    
+    # Return the processed Systematic Review versions data
+    return(full_data)
+    
+    } 
+  
+  # Return NULL if no table is not found
+  else {
+    return(NULL) 
+    }
+}
+```
+
+Uncomment the code below to scrap the versions DOIs/URLs (takes several hours). I scrapped the version history data on January 22, 2025.
+
+```{r scrap_versions}
+# # Path to the CSV file where the versions data of processed systematic reviews are stored
+# # if does not exist yet, will be created in the following
+# csv_file <- "output_data/versions/SR_versions_with_events.csv"
+# 
+# # Listing Systematic Reviews (identified by DOI.unique) whose versions data have not been extracted yet
+# # Identified by checking which DOI.unique from cochrane_dataset (the downloaded cochrane databse) are not present in the csv_file storing results
+# # Here 9000 > to the number of systematic reviews (8,976), so it will scrap all the reviews; you can decrease the number
+# DOIs.unique.unprocessed <- f_get_urls_to_process(csv_file, cochrane_dataset, 9000, "DOI.unique")
+# cat(length(DOIs.unique.unprocessed), " systematic reviews left to process, out of\n",
+#     nrow(cochrane_dataset),  " systematic reviews in the database (as of January 22, 2025)", sep="")
+#
+# # Process each DOI to get version history and append the result to the CSV file
+# for (DOI.unique in DOIs.unique.unprocessed) {
+# 
+#   # URL linking to review version history
+#   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", DOI.unique, "/information#versionTable")
+# 
+#   # Get html webpage content
+#   doc <- f_get_html_page(url)
+# 
+#   # Extract the raw table data, identified with the html ID versionTableContent
+#   table_versions <- xml_find_first(doc, "//table[@id='versionTableContent']")
+# 
+#   # Clean the extracted table
+#   cleaned_table_versions <- clean_table(table_versions, DOI.unique)
+#   
+#   # Prints the processed systematic review
+#   cat("Systematic Review", print(DOI.unique), "processed")
+#   
+#   # Add the results to the csv storing results (if there acutally was a table)
+#   if (!is.null(cleaned_table_versions)) {
+#     # Append to CSV file (and write col names only if does not exist yet)
+#     write_csv(cleaned_table_versions, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))
+#   }
+# }
+```
+
+Below is an example of the history of version data displayed for a particular review ([here](https://www.cochranelibrary.com/cdsr/doi/10.1002/14651858.CD006919.pub5/information#versionTable)){target="_blank"}).
+
+```{r example_history_of_versions}
+# Read the pre-scrapped data
+versions_with_events <- read_csv("output_data/versions/SR_versions_with_events.csv")
+
+# Only select columns that are reported on the webpage, for SR "10.1002/14651858.CD006919" 
+temp <- versions_with_events %>%
+  filter(DOI.unique == "10.1002/14651858.CD006919") %>%
+  select(c("Published", "Title", "Stage", "Authors", "Version")) %>%
+  distinct() # Because or processed data includes the "show revisions" data, not displayed here
+
+# Display the table
+datatable(temp, rownames = F)
+```
+
+LE CAS DES 34 NON PROCESSED ?
+
+```{r unprocessed_SR_versions}
+csv_file <- "output_data/versions/SR_versions_with_events.csv"
+
+# Transform date string to a date object
+versions_with_events$Published <- as.Date(versions_with_events$Published, format = "%Y %b %d")
+
+# number of reviews unprocessed for some reason
+DOIs.unique.unprocessed <- f_get_urls_to_process(csv_file, cochrane_dataset, 16000, "DOI.unique")
+length(DOIs.unique.unprocessed)
+```
+
+
+## Compute versions numbers
+
+We now want to attribute a version number (V1, V2, V3...) to each particular version. Based on the table above, we can see that before the first version presenting results, there can be one or several Protocols. We code below attributes a version number to each version, not counting protocols. 
+
+NUMEROTER LES PROTOCOLES !
+
+```{r attribute_versions_numbers}
+# Get the reviews versions, based on their URL suffix: empty, .pub2, .pub3, etc... If there have been n protocols with an associated URL, the version number is N - n, with N the number in the URL suffix pubN (N=1 if the URL is empty).
+
+# get a table with each line a unique occurence of version (no multiple lines due to multiple Events on a same version)
+versions <- versions_with_events %>% 
+  select(Published, Stage, Version, DOI.unique) %>% 
+  distinct() # Because of multiple events in 1 unique version
+
+# if the stage is a protocol, indicate it, leave empty otherwise, ready to be filled by version number
+versions <- versions %>% 
+  mutate(version_stage = case_when(Stage == "Protocol" ~ "Protocol",T~NA))
+
+# function to extract the N in URL suffix pubN, used to determine the version
+extract_pubN_number <- function(version) {
+  if (str_detect(version, "\\.pub\\d+$")) {
+    as.integer(str_extract(version, "\\d+$"))
+  } else {
+    1
+  }
+}
+
+# fill actual version number, not counting protocol as a version number
+# - protocol rows keep "Protocol"
+# - non-protocol rows get assigned "V" followed by the extracted number minus the number of protocols for that DOI.unique
+versions <- versions %>%
+  group_by(DOI.unique) %>%
+  mutate(
+    # Count the number of protocol rows for this DOI.unique
+    protocol_count = sum(Stage == "Protocol"),
+    # extract version number (or get default of 1)
+    version_number = sapply(Version, extract_pubN_number),
+    # For non-protocol rows (version_stage is NA) assign "V" followed by
+    # version_number adjusted by subtracting protocol_count.
+    # Protocol rows keep "Protocol".
+    version_stage = case_when(
+      !is.na(version_stage) ~ version_stage,
+      is.na(version_stage) ~ paste0("V", version_number - protocol_count),
+      TRUE ~ version_stage
+    )
+  ) %>%
+  select(-version_number, -protocol_count) %>% 
+  ungroup()
+
+# Order the versions: Protocol, V1, V2, V3...
+versions$version_stage <- factor(
+  versions$version_stage, 
+  levels = c("Protocol", paste0("V", 1:9))
+  )
+
+# now add version number to the main file
+versions_with_events$version_stage <- 
+  versions$version_stage[match(versions_with_events$Version, versions$Version)]
+
+# save the file with all the versions and their URL for each review
+f_save_csv_files(versions, "output_data/versions/", "SR_versions.csv")
+```
+
+
+:::
+
+From now we will only focus on versions with results; we thus exclude the versions which are only protocols.
+
+```{r get_versions_without_protocols}
+versions_without_protocols <- versions %>%
+  filter(version_stage!="Protocol")
+
+cat(
+  nrow(versions_without_protocols), "unique versions, excluding protocols\n",
+  nrow(versions)-nrow(versions_without_protocols), "versions that are protocols"
+)
+```
+
+There are `r nrow(versions_without_protocols)` unique versions, excluding protocols; and `r nrow(versions)-nrow(versions_without_protocols)` versions that are protocols.
+
+
+
+# Scrap open access data
+
+Below are the items that are open acess for every review, and for which you can completely reproduce the data scrapping results.
+
+::: panel-tabset
+
+## Abstracts
+
+For each abstract of each version, we extract the following contents:
+
+  -   whether it is a withdrawn version (in this case the abstract title is "	
+Reason for withdrawal from publication")
+  -   the abstract subsections (background, methods etc)
+  -   the text content
+
+Uncomment the code below to scrap the abstract content of every versions (takes several hours). I scrapped the version history data on Feb 1, 2025.
+
+```{r scrap_abstracts_content}
+# # The principle is the same as in "Scrap versions URL"; see this section code if you want more details.
+# 
+# # Path to the CSV file
+# csv_file <- "output_data/abstracts/SR_abstracts_with_sections.csv"
+# versions_to_process <- f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")
+# length(versions_to_process)
+# 
+# # Process each version and append the result to the CSV file
+# for (version_url in versions_to_process) {
+# 
+#   # Clean the URL by removing the "https://doi.org/" part
+#   url <- sub("https://doi.org/", "", version_url)
+# 
+#   # Construct the full URL for the review version history
+#   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", url)
+# 
+#   # Get the html code of the webpage page
+#   doc <- f_get_html_page(url)
+# 
+#   # Get the title of the Abstract section (in purple on the page)
+#   section_title <- doc %>%
+#     html_node("section.abstract") %>%
+#     html_nodes("h2.title") %>%
+#     html_text2()
+# 
+#   # Extract the abstract sections
+#   sections <- doc %>%
+#     html_node("div.abstract.full_abstract") %>%# get abstract from its class ID
+#     html_nodes("section") # Extract all <section> nodes
+# 
+#   # Check if sections exist
+#   if (length(sections) > 0) {
+#     # Extract section titles and their corresponding text
+#     df <- tibble(
+#       Abstract_title = section_title,
+#       Section = sections %>%
+#         html_node("h3.title") %>%
+#         html_text(trim = TRUE) %>%
+#         replace(is.na(.), "Unnamed Section"), # Replace missing titles with "Unnamed Section"
+#       Text = sections %>% html_node("p") %>% html_text2() # Extract section content
+#     )
+#   }
+#   # If no sections exist, extract the whole abstract text
+#   else {
+#     full_text <- doc %>%
+#       html_node("div.abstract.full_abstract") %>%
+#       html_text2() # Extract the full abstract text
+# 
+#     # Create a tibble with "Unnamed Section"
+#     df <- tibble(
+#       Abstract_title = section_title,
+#       Section = "Unnamed Section",
+#       Text = full_text
+#     )
+#   }
+# 
+#   # Get metadata associated with the version URL
+#   metadata <- versions_without_protocols %>% filter(Version == version_url)
+# 
+#   # Add metadata information
+#   df <- df %>%
+#     mutate(
+#       Published = metadata$Published,
+#       Version = metadata$Version,
+#       DOI.unique = metadata$DOI.unique,
+#       version_stage = metadata$version_stage
+#     )
+# 
+#   # Rearrange columns so metadata columns come first
+#   df <- df %>%
+#     select(Published, Version, DOI.unique, version_stage, everything())
+# 
+#   # Append to CSV file (and write col names only if does not exist yet)
+#   write_csv(df, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))
+#   glimpse(df) # shows the collected data
+# }
+```
+
+```{r glimpse_abstracts}
+csv_file <- "output_data/abstracts/SR_abstracts_with_sections.csv"
+
+# Check no more versions to process
+cat(
+  "\n", length(f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")), 
+  "versions left to process"
+)
+
+# Glimpse into the SR_abstracts_with_sections.csv content
+glimpse(read_csv(csv_file))
+```
+
+
+## Plain language summary
+
+For each version, we extract the Plain Language Summary content. If there is no Plain Language Summary, the content is simply "NA".
+
+Uncomment the code below to scrap the abstract content of every versions (takes several hours). I scrapped the version history data on January 27, 2025
+
+```{r scrap_plain_language_summary}
+# # Path to the CSV file
+# csv_file <- "output_data/plain_language_summary/SR_plain_language_summary.csv"
+# 
+# versions_to_process <- f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")
+# length(versions_to_process)
+# # Process each version and append the result to the CSV file
+# for (version_url in versions_to_process) {
+# 
+#   # Clean the URL by removing the "https://doi.org/" part
+#   url <- sub("https://doi.org/", "", version_url)
+# 
+#   # Construct the full URL for the review version history
+#   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", url)
+# 
+#   # Get the html code of the webpage page
+#   doc <- f_get_html_page(url)
+# 
+#   # Extract the Plain Language Summary text from the page
+#   pls <- doc %>%
+#     html_node("div.abstract.abstract_plainLanguageSummary") %>%
+#     html_text2()
+# 
+#   # Retrieve the row(s) from versions_without_protocols for this version_url
+#   version_data <- versions_without_protocols %>% filter(Version == version_url)
+# 
+#   # Add the plain language summary as a new column
+#   version_data <- version_data %>%
+#     mutate(plain_languag_summary = pls)
+# 
+#   # Append to CSV file (and write col names only if does not exist yet)
+#   write_csv(version_data, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))
+#   glimpse(version_data) # shows the collected data
+# }
+```
+
+```{r glimpse_plain_language_summary}
+csv_file <- "output_data/plain_language_summary/SR_plain_language_summary.csv"
+
+# Check no more versions to process
+cat(
+  "\n", length(f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")), 
+  "versions left to process"
+)
+
+# Glimpse into the SR_abstracts_with_sections.csv content
+glimpse(read_csv(csv_file))
+```
+
+:::
+
+# Scrap data behind paywalls 
+
+Below are the Cochrane systematic reviews content that are not always open access, and might me behind paywalls. If you are not connected to a network which can access paying content, you will only get a subset of the results.
+
+::: panel-tabset
+
+## TBD Author's conclusions
+
+section class authorsConclusions
+
+```{r}
+# # Path to the CSV file
+# csv_file <- "output_data/SR_authors_conclusion.csv"
+# 
+# # Check if the CSV file exists and load processed Versions
+# if (file.exists(csv_file)) {
+#   processed_data <- read_csv(csv_file)
+#   processed_versions <- unique(processed_data$Version)
+# } else {
+#   processed_versions <- character(0)
+# }
+# 
+# # Identify unprocessed Versions
+# versions_to_process <- setdiff(versions_without_protocols$Version, processed_versions)
+# 
+# #only get a subset of the unprocessed version
+# versions_to_process <- head(versions_to_process, 1000)
+# 
+# # Process each version and append the result to the CSV file
+# for (version_url in versions_to_process) {
+#   # Clean the URL by removing the "https://doi.org/" part
+#   version <- sub("https://doi.org/", "", version_url)
+# 
+#   # Construct the full URL for the review version history
+#   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", version)
+# 
+#   # Get the HTML page and parse it
+#   response <- GET(url, user_agent("Mozilla/5.0"))
+#   doc <- content(response, as = "parsed", encoding = "UTF-8")
+# 
+#   # Extract the abstract text from the page
+#   pls <- doc %>%
+#     html_node("div.abstract.abstract_plainLanguageSummary") %>%
+#     html_text2()
+# 
+#   # Retrieve the row(s) from versions_without_protocols for this version_url
+#   version_data <- versions_without_protocols %>%
+#     filter(Version == version_url)
+# 
+#   # Add the abstract_text as a new column
+#   version_data <- version_data %>%
+#     mutate(plain_languag_summary = pls)
+# 
+#   # # Check if the file exists
+#   # if (file.exists(csv_file)) {
+#   #   # Append to the file without writing headers
+#   #   write_csv(version_data, file = csv_file, append = TRUE)
+#   # } else {
+#   #   # Write the file with headers
+#   #   write_csv(version_data, file = csv_file)
+#   # }
+# }
+```
+
+
+## Summary Of Findings
+
+The extraction of the Summary Of Findings tables content operates in 2 steps, because the data formatting is not always the same and is more complex. First, we scrap and save the tables (represented by their html code) for each version. Second we extract the content by giving ChatGPT (chagtp-4o-mini) asking it to extract the information.
+
+::: panel-tabset
+
+### Scrap SOF sections content
+
+Summary Of Findings sections were generalized only starting 2008-2010. As a results, many reviews versions do not have such a section. If that is the case, we indicate "No summary of Findings" instead of the section centent.
+
+Uncomment the code below to scrap the abstract content of every versions (takes several hours). I scrapped the Summary Of Findings tables on January 28-30, 2025.
+
+```{r scrap_SOF_tables}
+# csv_file <- "output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv"
+# 
+# versions_to_process <- f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")
+# length(versions_to_process)
+# 
+# # Process each table version and append the result to the CSV file
+# for (version_url in versions_to_process) {
+# 
+#   # Clean the URL by removing the "https://doi.org/" part
+#   url <- sub("https://doi.org/", "", version_url)
+# 
+#   # Construct the full URL for the review version history
+#   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", url)
+# 
+#   # Get the html code of the webpage page
+#   doc <- f_get_html_page(url)
+#   
+#   # Extract the summary of findings section
+#   section_SOM <- doc %>%
+#     html_node("section.summaryOfFindings") %>%
+#     as.character()
+#   
+#     # Handle the case where the section is not found
+#     SOM_html_string <- if (!is.na(section_SOM)) {
+#       section_SOM %>% as.character()
+#     } else {
+#       "No summary of Findings"
+#     }
+#   
+#   # Create a data frame with version_url and the section
+#   data <- data.frame(
+#     Version = version_url,
+#     SOM_html_string = SOM_html_string,
+#     stringsAsFactors = FALSE  # Ensure the strings are not converted to factors
+#     )
+#   glimpse(data)
+#   
+#   # Save (if file does not yet exist) or append (if exist) the data to the CSV file
+#   write_csv(data, file=csv_file, append = TRUE, col_names = !file.exists(csv_file))
+# 
+# }
+```
+
+```{r glimpse_SOF_and_get_versions_with_SOF}
+csv_file <- "output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv"
+
+# Check no more versions to process
+cat(
+  "\n", length(f_get_urls_to_process(csv_file, versions_without_protocols, 16000, "Version")), 
+  "versions left to process"
+)
+
+# Glimpse into the SR_abstracts_with_sections.csv content
+glimpse(read_csv(csv_file))
+
+# Get only versions which contain a SOF
+versions_with_SOM <- read_csv(csv_file) %>% filter(SOM_html_string != "No summary of Findings")
+```
+
+Out of the `r nrow(versions_without_protocols)` systematic reviews versions, only `r nrow(versions_with_SOM)` have a summary of findings section.
+
+### Extract content with OpenAI API
+
+Then, for each version Summary of Findings, we give the html tables to chagtp-4o-mini through OpenAI API, and ask it to extract some core information:
+
+  -   the title of the summary of findings table
+  -   the PICO (population, intervention, comparison, outcome)
+  -   the certainty of evidence
+
+```{r get_API_key}
+if (Sys.getenv("OPENAI_API_KEY") == "") {
+  print("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+}
+# Uncomment and remplace to enter your API key
+#Sys.setenv(OPENAI_API_KEY = "sk-XXXXX")
+```
+
+Uncomment the code below to extract the summary of findings tables content using chatgpt API. You will need an OpenAI API key. This is very long (about 40 hours, began on Feb 2, ended on Feb 4).
+
+
+```{r}
+# # Retrieve the list of version URLs to process
+# csv_file <- "output_data/summary_of_findings/SR_SOF_confidence.csv"
+# versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 7000, "Version")
+# cat("Number of versions to process:", length(versions_to_process), "\n")
+# cat("Total unique versions:", length(unique(versions_with_SOM$Version)), "\n")
+# 
+# # Iterate over each version URL
+# for (version_url in versions_to_process) {
+# 
+#   # Retrieve the row(s) from versions_without_protocols for this version_url
+#   version_data <- versions_without_protocols %>% filter(Version == version_url)
+# 
+#   # Extract metadata values
+#   published_date <- version_data$Published[1]
+#   doi_unique <- version_data$DOI.unique[1]
+#   version_stage <- version_data$version_stage[1]
+# 
+#   # Extract the Summary of Findings section (as HTML)
+#   SOM_section_html <- versions_with_SOM %>%
+#     filter(Version == version_url) %>%
+#     pull(SOM_html_string)
+# 
+#   # Parse the SOM HTML content
+#   html_doc <- read_html(SOM_section_html)
+# 
+#   # Extract all table nodes (assuming tables are contained within <div class="table"> elements)
+#   tables <- html_doc %>% html_nodes("div.table")
+# 
+#   # Check if any tables were found
+#   if(length(tables) == 0){
+#     warning(paste("No tables found for Version:", version_url))
+#     next  # Skip to the next iteration if no tables are found
+#   }
+# 
+#   # Extract HTML content for each table (each table is assumed to have a <table> node within the div)
+#   table_htmls <- sapply(tables, function(tbl) {
+#     node <- tbl %>% html_node("table")
+#     if (!is.na(node)) as.character(node) else ""
+#   })
+# 
+#   # Combine the HTML for all tables using a separator to delineate them
+#   combined_tables_html <- paste(table_htmls, collapse = "\n\n-----\n\n")
+# 
+#   # Create the prompt for OpenAI for the current SOM section containing multiple tables
+#   prompt <- paste(
+#     "I have the following Cochrane Summary of Findings section (as HTML), containing multiple tables. Each table contains multiple outcomes with various details.",
+#     "For each outcome, please extract the following information as CSV (one row per outcome, one column per variable; fill missing data with 'NA'):",
+#     "\n- SOM_title: the table title (generally the first line) describing what is evaluated.",
+#     "\n- patient_population: population (and possibly subpopulations) of interest.",
+#     "\n- settings: e.g., inpatient hospital, primary care in Europe, etc.",
+#     "\n- intervention: the experimental intervention.",
+#     "\n- comparison: the comparator intervention (including no specific intervention).",
+#     "\n- outcome: outcome measured.",
+#     "\n- outcome_additional_info: any additional information about the outcome (e.g., scale, follow-up, etc.).",
+#     "\n- outcome_reported: 'yes' if associated certainty of evidence is reported, otherwise 'no'.",
+#     "\n- certainty_of_evidence: Certainty of Evidence (omit symbols like ⊕ or ⊝).",
+#     "  Possible values: 'high', 'moderate', 'low', 'very low', 'NA', or if unclear for you, 'unable to attribute'.",
+#     "\n\nBelow is the combined HTML content for the tables:",
+#     "\n\n", combined_tables_html,
+#     "\n\nDo not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.",
+#     sep = ""
+#   )
+# 
+#   # Make the Chat Completion request (one request per SOM section)
+#   response <- tryCatch(
+#     {
+#       create_chat_completion(
+#         model = "gpt-4o-mini",  # or "gpt-4" if available
+#         messages = list(
+#           list(role = "system", content = "You are a helpful medical reviewer assistant."),
+#           list(role = "user",   content = prompt)
+#         ),
+#         temperature = 0
+#       )
+#     },
+#     error = function(e) {
+#       warning(paste("OpenAI API request failed for Version:", version_url, "with error:", e$message))
+#       return(NULL)
+#     }
+#   )
+# 
+#   # Inform about the response and token usage
+#   if (!is.null(response)) {
+#     cat("Response generated for Version:", version_url, "\n",
+#         response$usage$total_tokens, "tokens used\n")
+#   }
+# 
+#   # Skip to next iteration if API call failed
+#   if (is.null(response)) next
+# 
+#   # Extract the CSV output from the response
+#   csv_output <- tryCatch(
+#     {
+#       response$choices$message.content
+#     },
+#     error = function(e) {
+#       warning(paste("Failed to extract CSV content for Version:", version_url))
+#       return(NULL)
+#     }
+#   )
+# 
+#   # Skip if CSV output is NULL
+#   if (is.null(csv_output)) next
+# 
+#   # Parse the CSV string into a data frame
+#   parsed_csv <- tryCatch(
+#     {
+#       read_csv(csv_output, show_col_types = FALSE)
+#     },
+#     error = function(e) {
+#       warning(paste("Failed to parse CSV for Version:", version_url))
+#       return(NULL)
+#     }
+#   )
+# 
+#   # Skip if parsing failed
+#   if (is.null(parsed_csv)) next
+# 
+#   # Add additional metadata columns to parsed_csv
+#   parsed_csv <- parsed_csv %>%
+#     mutate(
+#       Published = published_date,
+#       Version = version_url,
+#       DOI.unique = doi_unique,
+#       version_stage = version_stage
+#     ) %>%
+#     # Reorder columns to have metadata first
+#     select(Published, Version, DOI.unique, version_stage, everything())
+# 
+#   # Save (if file does not yet exist) or append (if exists) the data to the CSV file
+#   write_csv(parsed_csv, file = csv_file, append = TRUE, col_names = !file.exists(csv_file))
+# 
+#   cat("Successfully processed Version:", version_url, "\n")
+# }
+```
+
+:::
+
+:::
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- # Old tables extractions -->
+
+<!-- ##### 1 API request by table -->
+
+<!-- ```{r} -->
+<!-- # Retrieve the list of version URLs to process -->
+<!-- csv_file <- "output_data/summary_of_findings/SR_SOF_confidence.csv" -->
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 3, "Version") -->
+<!-- length(versions_to_process) -->
+<!-- length(unique(versions_with_SOM$Version)) -->
+
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+
+<!--   # Extract the Summary of Findings section (as HTML) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+
+<!--   # Parse the SOM HTML content -->
+<!--   html_doc <- read_html(SOM_section_html) -->
+
+<!--   # Extract all table nodes -->
+<!--   tables <- html_doc %>% -->
+<!--     html_nodes("div.table") -->
+
+<!--   # Check if there are any tables found -->
+<!--   if(length(tables) == 0){ -->
+<!--     warning(paste("No tables found for Version:", version_url)) -->
+<!--     next  # Skip to the next iteration if no tables are found -->
+<!--   } -->
+
+<!--   # Iterate over each table within the current version -->
+<!--   for (i in seq_along(tables)) { -->
+<!--     # Extract the HTML content of the current table -->
+<!--     current_table_html <- tables[[i]] %>% html_node("table") %>% as.character() -->
+
+<!--     # Create the prompt for OpenAI for the current table -->
+<!--     prompt <- paste( -->
+<!--       "I have the following Cochrane Summary of Findings sections (as html). :\n\n", -->
+<!--       current_table_html, -->
+<!--       "\n\n In it, there are usually 2 columns about absolute effects or illustrative comparative risks; I am NOT interested in their information.", -->
+<!--       "For each outcome in the table, extract the following information as a CSV (1 column per information variable, 1 row per outcome; fill cells with `NA` if data is missing):\n", -->
+
+<!--       "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--       "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--       "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--       "- intervention: the experimental intervention\n", -->
+<!--       "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--       "- outcome: outcome\n", -->
+<!--       "- outcome_additional_info: if there is additional information about the outcome (e.g. scale, follow-up...) \n", -->
+<!--       "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+
+<!--       "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝). Possible values are: 'high', 'moderate', 'low', 'very low', 'NA'. Possibly, if it is unclear of you, you can also fill with 'unable to attribute'.\n", -->
+
+<!--       "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+
+<!--       sep = "" -->
+<!--     ) -->
+
+<!--     # Make the Chat Completion request -->
+<!--     response <- tryCatch( -->
+<!--       { -->
+<!--         create_chat_completion( -->
+<!--           model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--           messages = list( -->
+<!--             list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--             list(role = "user",   content = prompt) -->
+<!--           ), -->
+<!--           temperature = 0 -->
+<!--         ) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("OpenAI API request failed for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+
+<!--     # Inform about the response -->
+<!--     if (!is.null(response)) { -->
+<!--       cat("Response generated for Version:", version_url, "Table:", i, "\n", -->
+<!--           response$usage$total_tokens, "tokens used\n") -->
+<!--     } -->
+
+<!--     # Skip to next table if API call failed -->
+<!--     if (is.null(response)) next -->
+
+<!--     # Extract the CSV output -->
+<!--     csv_output <- tryCatch( -->
+<!--       { -->
+<!--         response$choices$message.content -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to extract CSV content for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+
+<!--     # Skip if CSV output is NULL -->
+<!--     if (is.null(csv_output)) next -->
+
+<!--     # Parse the CSV string into a data frame -->
+<!--     parsed_csv <- tryCatch( -->
+<!--       { -->
+<!--         read_csv(csv_output, show_col_types = FALSE) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to parse CSV for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+
+<!--     # Skip if parsing failed -->
+<!--     if (is.null(parsed_csv)) next -->
+
+<!--     # Add the additional metadata columns to parsed_csv -->
+<!--     parsed_csv <- parsed_csv %>% -->
+<!--       mutate( -->
+<!--         Published = published_date, -->
+<!--         Version = version_url, -->
+<!--         DOI.unique = doi_unique, -->
+<!--         version_stage = version_stage, -->
+<!--         SOM_table_number = i  # Add table number within the version -->
+<!--       ) %>% -->
+<!--       # Reorder columns to have metadata first -->
+<!--       select(Published, Version, DOI.unique, version_stage, SOM_table_number, everything()) -->
+
+<!--     # Save (if file does not yet exist) or append (if exist) the data to the CSV file -->
+<!--     write_csv(parsed_csv, file=csv_file, append = TRUE, col_names = !file.exists(csv_file)) -->
+
+<!--     cat("Successfully processed Version:", version_url, "Table:", i, "\n") -->
+<!--   } -->
+
+<!-- } -->
+
+<!-- # View the consolidated dataframe -->
+<!-- temp <- read_csv(csv_file) -->
+<!-- length(unique(temp$Version)) -->
+
+<!-- unique(temp$certainty_of_evidence) -->
+
+<!-- ``` -->
+
+
+
+<!-- #### Only essential info -->
+
+<!-- ```{r} -->
+<!-- csv_file <- "output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv" -->
+<!-- versions_with_SOM <- read_csv(csv_file) -->
+<!-- glimpse(versions_with_SOM) -->
+<!-- ``` -->
+
+
+<!-- trying to do a list of the tables (Donner selection criteria pour qu'il sache le type de study ?) -->
+
+<!-- ```{r} -->
+<!-- version_url <- versions_with_SOM$Version[1] -->
+
+<!-- # Extract the Summary of Sindings section (as html) -->
+<!-- SOM_section_html <- versions_with_SOM %>% -->
+<!--   filter(Version == version_url) %>% -->
+<!--   pull(SOM_html_string) -->
+
+<!-- html_doc <- read_html(SOM_section_html) -->
+
+<!-- tables <- html_doc %>% -->
+<!--   html_nodes("div.table") -->
+
+<!-- # Create a data frame with table number and HTML content of each table -->
+<!-- table_df <- data.frame( -->
+<!--   SoF_table_number = seq_along(tables), -->
+<!--   SoF_table_content = sapply(tables, as.character), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+
+<!-- # Define a Function to Extract the Third Row from a Table -->
+<!-- extract_third_row <- function(table_node) { -->
+<!--   rows <- table_node %>% html_nodes("tr") -->
+<!--   if (length(rows) >= 3) { -->
+<!--     third_row <- rows[3] %>% html_text(trim = TRUE) -->
+<!--     return(third_row) -->
+<!--   } else { -->
+<!--     return(NA_character_) -->
+<!--   } -->
+<!-- } -->
+
+<!-- # Process the Data Frame to Extract Third Rows from Tables -->
+<!-- global_df <- versions_with_SOM %>% -->
+<!--   head(10) %>% -->
+<!--   # Step 1: Parse 'SOM_html_string' as HTML safely -->
+<!--   mutate( -->
+<!--     html_doc = map(SOM_html_string, ~ { -->
+<!--       if (grepl("^\\s*<", .x)) { -->
+<!--         tryCatch(read_html(.x), error = function(e) NULL) -->
+<!--       } else { -->
+<!--         NULL -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+
+<!--   # Step 2: Extract all table nodes from the HTML document -->
+<!--   mutate( -->
+<!--     tables = map(html_doc, ~ { -->
+<!--       if (!is.null(.x)) { -->
+<!--         # Adjust the selector based on your HTML structure -->
+<!--         html_nodes(.x, "div.table, table") -->
+<!--       } else { -->
+<!--         list() -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+
+<!--   # Step 3: Extract the third row from each table -->
+<!--   mutate( -->
+<!--     third_rows = map(tables, ~ map_chr(.x, extract_third_row)) -->
+<!--   ) %>% -->
+
+<!--   # Step 4: Select only the necessary columns -->
+<!--   select(Version, third_rows) %>% -->
+
+<!--   # Step 5: Unnest the list of third rows into individual rows -->
+<!--   unnest(third_rows) %>% -->
+
+<!--   # Step 6: Assign a table number within each Version -->
+<!--   group_by(Version) %>% -->
+<!--   mutate(SoF_table_number = row_number()) %>% -->
+<!--   ungroup() %>% -->
+
+<!--   # Step 7: Rename the third row column for clarity -->
+<!--   rename(SoF_third_row = third_rows) -->
+
+<!-- # do all the rows contain "outcome" ? -->
+<!-- test <- global_df %>% -->
+<!--   filter(!grepl("Outcome", SoF_third_row)) -->
+<!-- nrow(test) -->
+<!-- nrow(global_df) -->
+
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- # Define a Function to Extract the Third Row from a Table -->
+<!-- extract_fourth_row <- function(table_node) { -->
+<!--   rows <- table_node %>% html_nodes("tr") -->
+<!--   if (length(rows) >= 4) { -->
+<!--     third_row <- rows[4] %>% html_text(trim = TRUE) -->
+<!--     return(third_row) -->
+<!--   } else { -->
+<!--     return(NA_character_) -->
+<!--   } -->
+<!-- } -->
+
+<!-- # Process the Data Frame to Extract Third Rows from Tables -->
+<!-- global_df_4 <- versions_with_SOM %>% -->
+<!--   # Step 1: Parse 'SOM_html_string' as HTML safely -->
+<!--   mutate( -->
+<!--     html_doc = map(SOM_html_string, ~ { -->
+<!--       if (grepl("^\\s*<", .x)) { -->
+<!--         tryCatch(read_html(.x), error = function(e) NULL) -->
+<!--       } else { -->
+<!--         NULL -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+
+<!--   # Step 2: Extract all table nodes from the HTML document -->
+<!--   mutate( -->
+<!--     tables = map(html_doc, ~ { -->
+<!--       if (!is.null(.x)) { -->
+<!--         # Adjust the selector based on your HTML structure -->
+<!--         html_nodes(.x, "div.table, table") -->
+<!--       } else { -->
+<!--         list() -->
+<!--       } -->
+<!--     }) -->
+<!--   ) %>% -->
+
+<!--   # Step 3: Extract the third row from each table -->
+<!--   mutate( -->
+<!--     fourth_rows = map(tables, ~ map_chr(.x, extract_fourth_row)) -->
+<!--   ) %>% -->
+
+<!--   # Step 4: Select only the necessary columns -->
+<!--   select(Version, fourth_rows) %>% -->
+
+<!--   # Step 5: Unnest the list of third rows into individual rows -->
+<!--   unnest(fourth_rows) %>% -->
+
+<!--   # Step 6: Assign a table number within each Version -->
+<!--   group_by(Version) %>% -->
+<!--   mutate(SoF_table_number = row_number()) %>% -->
+<!--   ungroup() %>% -->
+
+<!--   # Step 7: Rename the third row column for clarity -->
+<!--   rename(SoF_fourth_row = fourth_rows) -->
+
+<!-- # do all the rows contain "outcome" ? -->
+<!-- test <- global_df_4 %>% -->
+<!--   filter(!grepl("Outcome", SoF_fourth_row)) -->
+<!-- nrow(test) -->
+<!-- nrow(global_df) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- # Load necessary libraries -->
+<!-- library(rvest) -->
+<!-- library(dplyr) -->
+<!-- library(readr)  # For read_csv -->
+
+<!-- # Initialize a dataframe to store all results -->
+<!-- global_results <- data.frame( -->
+<!--   #Published = date(), -->
+<!--   Version = character(), -->
+<!--   DOI.unique = character(), -->
+<!--   version_stage = character(), -->
+<!--   SOM_table_number = integer(), -->
+<!--   SOM_title = character(), -->
+<!--   patient_population = character(), -->
+<!--   settings = character(), -->
+<!--   intervention = character(), -->
+<!--   comparison = character(), -->
+<!--   outcome = character(), -->
+<!--   outcome_additional_info = character(), -->
+<!--   outcome_reported = character(), -->
+<!--   number_of_participants = integer(), -->
+<!--   nb_RCTs = integer(), -->
+<!--   nb_NRSs = integer(), -->
+<!--   nb_total_studies = integer(), -->
+<!--   certainty_of_evidence = character(), -->
+<!--   relative_effect = numeric(), -->
+<!--   relative_effect_lb = numeric(), -->
+<!--   relative_effect_ub = numeric(), -->
+<!--   metric_used = character(), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+
+<!-- # Retrieve the list of version URLs to process -->
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 3, "Version") -->
+
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+
+<!--   # Extract the Summary of Findings section (as HTML) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+
+<!--   # Parse the SOM HTML content -->
+<!--   html_doc <- read_html(SOM_section_html) -->
+
+<!--   # Extract all table nodes -->
+<!--   tables <- html_doc %>% -->
+<!--     html_nodes("div.table") -->
+
+<!--   # Check if there are any tables found -->
+<!--   if(length(tables) == 0){ -->
+<!--     warning(paste("No tables found for Version:", version_url)) -->
+<!--     next  # Skip to the next iteration if no tables are found -->
+<!--   } -->
+
+<!--   # Iterate over each table within the current version -->
+<!--   for (i in seq_along(tables)) { -->
+<!--     # Extract the HTML content of the current table -->
+<!--     current_table_html <- tables[[i]] %>% html_node("table") %>% as.character() -->
+
+<!--     # Create the prompt for OpenAI for the current table -->
+<!--     prompt <- paste( -->
+<!--       "I have the following Cochrane Summary of Findings table (as html):\n\n", -->
+<!--       current_table_html, -->
+<!--       "\n\n In it, there are usually 2 columns about absolute effects or illustrative comparative risks; I am NOT interested in their information.  Especially, do NOT confuse what is reported in these 2 columns with the relative_effect, relative_effect_lb or relative_effect_ub (see below).", -->
+<!--       "For each outcome in the table, extract the following information as a CSV (1 column per information variable, 1 row per outcome; fill cells with `NA` if data is missing):\n", -->
+
+<!--       "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--       "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--       "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--       "- intervention: the experimental intervention\n", -->
+<!--       "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--       "- outcome: outcome (generally in bold, but not always)\n", -->
+<!--       "- outcome_additional_info: if there is additional information about the outcome\n", -->
+<!--       "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+
+<!--       "- number_of_participants: Number of Participants (an integer)\n", -->
+<!--       "- nb_RCTs: if reported, number of randomized controlled trial studies (an integer)\n", -->
+<!--       "- nb_NRSs: if reported, number of non randomized studies (an integer)\n", -->
+<!--       "- nb_total_studies: total number of studies  (an integer); sometimes you need to add the different sorts of studies together\n", -->
+<!--       "if only the number of studies is reported but you have no information on nb_RCTs nor nb_NRSs, leeave them both 'NA'\n", -->
+
+<!--       "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝)\n", -->
+
+<!--       "- relative_effect: Relative Effect (e.g., RR, OR, HR, ROR, RHR...), as a numeric. Do NOT extract absolute effects or comparative risks.\n", -->
+<!--       "- relative_effect_lb: Relative Effect 95% confidence interval lower bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--       "- relative_effect_ub: Relative Effect 95% confidence interval upper bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--       "- metric_used: Metric Used for Relative Effect (RR, OR, HR, ROR, RHR...)\n\n", -->
+
+<!--       "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+
+<!--       sep = "" -->
+<!--     ) -->
+
+<!--     # Make the Chat Completion request -->
+<!--     response <- tryCatch( -->
+<!--       { -->
+<!--         create_chat_completion( -->
+<!--           model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--           messages = list( -->
+<!--             list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--             list(role = "user",   content = prompt) -->
+<!--           ), -->
+<!--           temperature = 0 -->
+<!--         ) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("OpenAI API request failed for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+
+<!--     # Inform about the response -->
+<!--     if (!is.null(response)) { -->
+<!--       cat("Response generated for Version:", version_url, "Table:", i, "\n", -->
+<!--           response$usage$total_tokens, "tokens used\n") -->
+<!--     } -->
+
+<!--     # Skip to next table if API call failed -->
+<!--     if (is.null(response)) next -->
+
+<!--     # Extract the CSV output -->
+<!--     csv_output <- tryCatch( -->
+<!--       { -->
+<!--         response$choices$message.content -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to extract CSV content for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+
+<!--     # Skip if CSV output is NULL -->
+<!--     if (is.null(csv_output)) next -->
+
+<!--     # Parse the CSV string into a data frame -->
+<!--     parsed_csv <- tryCatch( -->
+<!--       { -->
+<!--         read_csv(csv_output, show_col_types = FALSE) -->
+<!--       }, -->
+<!--       error = function(e) { -->
+<!--         warning(paste("Failed to parse CSV for Version:", version_url, "Table:", i)) -->
+<!--         return(NULL) -->
+<!--       } -->
+<!--     ) -->
+
+<!--     # Skip if parsing failed -->
+<!--     if (is.null(parsed_csv)) next -->
+
+<!--     # Add the additional metadata columns to parsed_csv -->
+<!--     parsed_csv <- parsed_csv %>% -->
+<!--       mutate( -->
+<!--         Published = published_date, -->
+<!--         Version = version_url, -->
+<!--         DOI.unique = doi_unique, -->
+<!--         version_stage = version_stage, -->
+<!--         SOM_table_number = i  # Add table number within the version -->
+<!--       ) %>% -->
+<!--       # Reorder columns to have metadata first -->
+<!--       select(Published, Version, DOI.unique, version_stage, SOM_table_number, everything()) -->
+
+<!--     # Append the parsed data to the global results -->
+<!--     global_results <- bind_rows(global_results, parsed_csv) -->
+
+<!--     cat("Successfully processed Version:", version_url, "Table:", i, "\n") -->
+<!--   } -->
+
+<!-- } -->
+
+<!-- # View the consolidated dataframe -->
+<!-- print(global_results) -->
+
+<!-- ``` -->
+
+
+
+
+<!-- ```{r} -->
+<!-- # Initialize an empty data frame to store results -->
+<!-- global_results <- data.frame( -->
+<!--   Version = character(), -->
+<!--   SOM_title = character(), -->
+<!--   outcome = character(), -->
+<!--   outcome_additional_info = character(), -->
+<!--   certainty_of_evidence = character(), -->
+<!--   number_of_participants = numeric(), -->
+<!--   number_of_studies = numeric(), -->
+<!--   relative_effect = numeric(), -->
+<!--   relative_effect_lb = numeric(), -->
+<!--   relative_effect_ub = numeric(), -->
+<!--   metric_used = character(), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+
+<!-- # Path to the CSV file -->
+<!-- csv_file <- "global_summary_of_findings.csv" -->
+
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 1, "Version") -->
+
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+
+<!--   # Extract the Summary of Sindings section (as html) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+
+<!--   # Create the prompt for OpenAI -->
+<!--   prompt <- paste( -->
+<!--     "I have the following Cochrane Summary of Findings section. I am interested in their Summary of Findings tables (there might be several tables in one section).\n\n", -->
+<!--     SOM_section_html, -->
+<!--     "\n\nFor each table, can you extract the following information as a CSV (1 column per information variable, 1 row per outcome; you can fill cells with `NA` if data is missing):\n", -->
+
+<!--     "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--     "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--     "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--     "- intervention: the experimental intervention\n", -->
+<!--     "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--     "- outcome: outcome (generally in bold, but not always)\n", -->
+<!--     "- outcome_additional_info: if there is additional information about the outcome\n", -->
+<!--     "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+
+<!--     "- number_of_participants: Number of Participants\n", -->
+<!--     "- nb_RCTs: if reported, number of randomized controlled trial studies\n", -->
+<!--     "- nb_NRSs: if reported, number of non randomized studies\n", -->
+<!--     "- nb_total_studies: total number of studies (sometimes you need to add the different sorts of studies together)\n", -->
+
+<!--     "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝)\n", -->
+
+<!--     "- relative_effect: Relative Effect (e.g., RR, OR, HR, ROR, RHR...), as a numeric. Do NOT extract absolute effects or comparative risks.\n", -->
+<!--     "- relative_effect_lb: Relative Effect 95% confidence interval lower bound, as a numeric.Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- relative_effect_ub: Relative Effect 95% confidence interval upper bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- metric_used: Metric Used for Relative Effect (RR, OR, HR, ROR, RHR...)\n\n", -->
+
+<!--     "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+
+<!--     # AND IF CANNOT FIND A TABLE -->
+<!--     sep = "" -->
+<!--   ) -->
+
+<!--   # Make the Chat Completion request -->
+<!--   response <- tryCatch( -->
+<!--     { -->
+<!--       create_chat_completion( -->
+<!--         model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--         messages = list( -->
+<!--           list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--           list(role = "user",   content = prompt) -->
+<!--         ), -->
+<!--         temperature = 0 -->
+<!--       ) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("OpenAI API request failed for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+
+<!--   cat("Response generated for version\n", version_url, "\n", response$usage$total_tokens, "tokens used\n") -->
+
+<!--   # Skip to next iteration if API call failed -->
+<!--   if (is.null(response)) next -->
+
+<!--   # Extract the CSV output -->
+<!--   csv_output <- tryCatch( -->
+<!--     { -->
+<!--       response$choices$message.content -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to extract CSV content for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+
+<!--   # Skip if CSV output is NULL -->
+<!--   if (is.null(csv_output)) next -->
+
+<!--   # Parse the CSV string into a data frame -->
+<!--   parsed_csv <- tryCatch( -->
+<!--     { -->
+<!--       read_csv(csv_output, show_col_types = FALSE) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to parse CSV for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+
+<!--   # Skip if parsing failed -->
+<!--   if (is.null(parsed_csv)) next -->
+
+<!--   # Add the additional metadata columns to parsed_csv -->
+<!--   parsed_csv <- parsed_csv %>% -->
+<!--     mutate( -->
+<!--       Published = published_date, -->
+<!--       Version = version_url, -->
+<!--       DOI.unique = doi_unique, -->
+<!--       version_stage = version_stage -->
+<!--       ) %>% -->
+<!--     # Reorder columns to have metadata first -->
+<!--     select(Published, Version, DOI.unique, version_stage, everything()) -->
+
+<!--   # Append the parsed data to the global results -->
+<!--   global_results <- bind_rows(global_results, parsed_csv) -->
+
+<!--   cat("Successfully processed URL:", full_url, "\n") -->
+<!-- } -->
+
+<!-- # Optional: Display the collected data -->
+<!-- print(global_results) -->
+
+<!-- # Define the output CSV file path -->
+<!-- output_csv_path <- "global_summary_of_findings.csv" -->
+
+<!-- # Write the global results to the CSV file -->
+<!-- write_csv(global_results, output_csv_path) -->
+
+<!-- cat("All data has been written to", output_csv_path, "\n") -->
+
+<!-- glimpse(response$usage$total_tokens) -->
+
+<!-- response$choices$message.content -->
+
+<!-- ``` -->
+
+
+
+
+
+<!-- #### More complex -->
+
+<!-- ```{r} -->
+<!-- # Initialize an empty data frame to store results -->
+<!-- global_results <- data.frame( -->
+<!--   Version = character(), -->
+<!--   SOM_title = character(), -->
+<!--   outcome = character(), -->
+<!--   outcome_additional_info = character(), -->
+<!--   certainty_of_evidence = character(), -->
+<!--   number_of_participants = numeric(), -->
+<!--   number_of_studies = numeric(), -->
+<!--   relative_effect = numeric(), -->
+<!--   relative_effect_lb = numeric(), -->
+<!--   relative_effect_ub = numeric(), -->
+<!--   metric_used = character(), -->
+<!--   stringsAsFactors = FALSE -->
+<!-- ) -->
+
+<!-- # Path to the CSV file -->
+<!-- csv_file <- "global_summary_of_findings.csv" -->
+
+<!-- versions_to_process <- f_get_urls_to_process(csv_file, versions_with_SOM, 1, "Version") -->
+
+
+
+
+<!-- # Iterate over each version URL -->
+<!-- for (version_url in versions_to_process) { -->
+
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% filter(Version == version_url) -->
+
+<!--   # Extract metadata values -->
+<!--   published_date <- version_data$Published[1] -->
+<!--   version <- version_data$Version[1] -->
+<!--   doi_unique <- version_data$DOI.unique[1] -->
+<!--   version_stage <- version_data$version_stage[1] -->
+
+<!--   # Extract the Summary of Sindings section (as html) -->
+<!--   SOM_section_html <- versions_with_SOM %>% -->
+<!--     filter(Version == version_url) %>% -->
+<!--     pull(SOM_html_string) -->
+
+<!--   # Create the prompt for OpenAI -->
+<!--   prompt <- paste( -->
+<!--     "I have the following Cochrane Summary of Findings section. I am interested in their Summary of Findings tables (there might be several tables in one section).\n\n", -->
+<!--     SOM_section_html, -->
+<!--     "\n\nFor each table, can you extract the following information as a CSV (1 column per information variable, 1 row per outcome; you can fill cells with `NA` if data is missing):\n", -->
+
+<!--     "- SOM_title: the table title (generally first line) describing what is evaluated.\n", -->
+<!--     "- patient_population: population (and possibly the subpopulations) of interest\n", -->
+<!--     "- settings: e.g inpatient hospital, primary care in Europe...\n", -->
+<!--     "- intervention: the experimental intervention\n", -->
+<!--     "- comparison: the comparator intervention (including no specific intervention)\n", -->
+<!--     "- outcome: outcome (generally in bold, but not always)\n", -->
+<!--     "- outcome_additional_info: if there is additional information about the outcome\n", -->
+<!--     "- outcome_reported: 'yes' (e.g., associated certainty of evidence is reported) or `no`\n", -->
+
+<!--     "- number_of_participants: Number of Participants\n", -->
+<!--     "- nb_RCTs: if reported, number of randomized controlled trial studies\n", -->
+<!--     "- nb_NRSs: if reported, number of non randomized studies\n", -->
+<!--     "- nb_total_studies: total number of studies (sometimes you need to add the different sorts of studies together)\n", -->
+
+<!--     "- certainty_of_evidence: Certainty of Evidence (do not write the ⊕ or ⊝)\n", -->
+
+<!--     "- relative_effect: Relative Effect (e.g., RR, OR, HR, ROR, RHR...), as a numeric. Do NOT extract absolute effects or comparative risks.\n", -->
+<!--     "- relative_effect_lb: Relative Effect 95% confidence interval lower bound, as a numeric.Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- relative_effect_ub: Relative Effect 95% confidence interval upper bound, as a numeric. Do NOT extract absolute effects or comparative risks\n", -->
+<!--     "- metric_used: Metric Used for Relative Effect (RR, OR, HR, ROR, RHR...)\n\n", -->
+
+<!--     "- reason_for_downgrading: usually in the <tfoot> of the concerned table (or at its bottom), there are explanations for the reason the certainty of evidence has been downgraded, corresponding to one or several superscript letters or numbers next to the certainty of evidence. Attribute the author's explanations to one or more of the 5 following reasons (based on GRADE considerations): -->
+<!--         - 'Risk of bias': linked for instance to limitations in the design and implementation (allocation sequence concealment, selective outcome reporting...); -->
+<!--         - 'Inconsistency': unexplained statistical heterogeneity or inconsistency of results, lack of confidence intervals overlap, differences in point estimate, between-study variance...; -->
+<!--         - 'Indirectness of evidence': if the studies adress quite different patients/intervention/comparison/outcome/questions; -->
+<!--         - 'Imprecision': for instance due to low sample size or number of events, large confidence interval...; -->
+<!--         - 'Publication bias': selective reporting of studies or outcomes. -->
+<!--     Sometimes there are no reasons, then just write 'NA'. If there is a reason that you cannot attribute to one of the 5 categories, write 'unable to attribute reason:' followed by the author's description of the reason in the cell\n\n", -->
+
+<!--     "- reason_for_upgrading: usually in the <tfoot> of the concerned table (or at its bottom), there are explanations for the reason the certainty of evidence has been upgraded, corresponding to one or several superscript letters or numbers next to the certainty of evidence. The reasons can be: -->
+<!--         - 'Large effects': large effect of the intervention; -->
+<!--         - 'Dose-response gradient': Dose-response gradient of the effect; -->
+<!--         - 'Plausible residual opposing confounding': when there is plausible confounding biases that likely under-estimate the intervention effect. -->
+<!--     Here again, there can be several reasons. If there is no reason, write 'NA'. If there is a reason that you cannot attribute to one of the 5 categories, write 'unable to attribute reason:' followed by the author's description of the reason in the cell \n\n", -->
+
+<!--     "Do not include any Markdown formatting, code blocks, or additional text. Just provide the raw CSV data, so that I can process it after.", -->
+
+<!--     # AND IF CANNOT FIND A TABLE -->
+<!--     sep = "" -->
+<!--   ) -->
+
+<!--   # Make the Chat Completion request -->
+<!--   response <- tryCatch( -->
+<!--     { -->
+<!--       create_chat_completion( -->
+<!--         model = "gpt-4o-mini",  # Ensure the model name is correct -->
+<!--         messages = list( -->
+<!--           list(role = "system", content = "You are a helpful medical reviewer assistant."), -->
+<!--           list(role = "user",   content = prompt) -->
+<!--         ), -->
+<!--         temperature = 0 -->
+<!--       ) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("OpenAI API request failed for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+
+<!--   cat("Response generated for version\n", version_url, "\n", response$usage$total_tokens, "tokens used\n") -->
+
+<!--   # Skip to next iteration if API call failed -->
+<!--   if (is.null(response)) next -->
+
+<!--   # Extract the CSV output -->
+<!--   csv_output <- tryCatch( -->
+<!--     { -->
+<!--       response$choices$message.content -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to extract CSV content for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+
+<!--   # Skip if CSV output is NULL -->
+<!--   if (is.null(csv_output)) next -->
+
+<!--   # Parse the CSV string into a data frame -->
+<!--   parsed_csv <- tryCatch( -->
+<!--     { -->
+<!--       read_csv(csv_output, show_col_types = FALSE) -->
+<!--     }, -->
+<!--     error = function(e) { -->
+<!--       warning(paste("Failed to parse CSV for URL:", full_url)) -->
+<!--       return(NULL) -->
+<!--     } -->
+<!--   ) -->
+
+<!--   # Skip if parsing failed -->
+<!--   if (is.null(parsed_csv)) next -->
+
+<!--   # Add the additional metadata columns to parsed_csv -->
+<!--   parsed_csv <- parsed_csv %>% -->
+<!--     mutate( -->
+<!--       Published = published_date, -->
+<!--       Version = version_url, -->
+<!--       DOI.unique = doi_unique, -->
+<!--       version_stage = version_stage -->
+<!--       ) %>% -->
+<!--     # Reorder columns to have metadata first -->
+<!--     select(Published, Version, DOI.unique, version_stage, everything()) -->
+
+<!--   # Append the parsed data to the global results -->
+<!--   global_results <- bind_rows(global_results, parsed_csv) -->
+
+<!--   cat("Successfully processed URL:", full_url, "\n") -->
+<!-- } -->
+
+<!-- # Optional: Display the collected data -->
+<!-- print(global_results) -->
+
+<!-- # Define the output CSV file path -->
+<!-- output_csv_path <- "global_summary_of_findings.csv" -->
+
+<!-- # Write the global results to the CSV file -->
+<!-- write_csv(global_results, output_csv_path) -->
+
+<!-- cat("All data has been written to", output_csv_path, "\n") -->
+
+<!-- glimpse(response$usage$total_tokens) -->
+
+<!-- response$choices$message.content -->
+
+<!-- ``` -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ### Old table extraction -->
+
+
+<!-- ```{r} -->
+<!-- f_clean_SOM_table <- function(table_node, version_url){ -->
+
+<!--   # Retrieve the row(s) from versions_without_protocols for this version_url -->
+<!--   version_data <- versions_without_protocols %>% -->
+<!--     filter(Version == version_url) -->
+
+<!--   # If there is a Summary of Findings table on the webpage -->
+<!--   if (!is.na(table_node_body)) { -->
+
+<!--     # Replace <br> tags within the table with simple spaces for cleaner output -->
+<!--     SOM_table <- table_node_body %>% -->
+<!--       as.character() %>%              # Convert the table HTML node to a character string -->
+<!--       gsub("<br\\s*/?>", "\n", .) %>% # Replace <br> or <br/> with a single space -->
+<!--       read_html() %>%                 # Parse the modified table back into a html document -->
+<!--       html_node("tbody") %>%          # Re-select the table (now cleaned) -->
+<!--       html_table()                    # Parse without the <br> tags -->
+
+<!--     # Get Title and PICO of the Summary of Findings Table -->
+<!--     SOM_title = SOM_table[[1, 1]] -->
+<!--     PICO = SOM_table[[2, 1]] -->
+
+
+<!--     # Keep only lines with  "⊕" or "⊝", indicating a reported certainty of the evidence (GRADE) -->
+<!--     filtered_df <- SOM_table %>% -->
+<!--       filter( -->
+<!--         apply(., 1, function(row) any(grepl("⊕|⊝", row))) & -->
+<!--           # No more than 6 occurrences of "⊕" or "⊝" on 1 line => because sometimes descrption of all GRADEs levels of evidence on the last line -->
+<!--           apply(., 1, function(row) sum(str_count(row, "⊕|⊝")) <= 6) -->
+<!--         ) -->
+<!--     # Identify the column containing "⊕" or "⊝" -->
+<!--     columns_to_keep <- sapply(filtered_df, function(column) any(grepl("⊕|⊝", column))) -->
+<!--     # Keep the first column (outcome)and the column with "⊕" or "⊝" -->
+<!--     filtered_df <- filtered_df[, c(TRUE, columns_to_keep[-1])] -->
+<!--     # Rename columns -->
+<!--     colnames(filtered_df)[1] <- "outcome"  # Rename the first column to "outcome" -->
+<!--     colnames(filtered_df)[2] <- "certainty"  # Rename the identified column to "certainty" -->
+
+<!--     # Add additional information -->
+<!--     filtered_df <- filtered_df %>% -->
+<!--       mutate( -->
+<!--         SOM_title = SOM_title, -->
+<!--         PICO = PICO, -->
+<!--         Published = version_data$Published, -->
+<!--         Version = version_data$Version, -->
+<!--         DOI.unique  = version_data$DOI.unique, -->
+<!--         version_stage = version_data$version_stage -->
+<!--         ) -->
+
+<!--     # get first line of table (in 3d row, row 1 and 2 are title and PICO), with DOI and version -->
+<!--     first_line <- SOM_table[3, ] -->
+<!--     first_line$DOI.unique <- version_data$DOI.unique -->
+<!--     first_line$Version <- version_data$Version -->
+
+<!--     # get table footer, with DOI and version -->
+<!--     footer <- data.frame(footer = table_node_foot) -->
+<!--     footer$DOI.unique <- version_data$DOI.unique -->
+<!--     footer$Version <- version_data$Version -->
+
+<!--     print(url) -->
+<!--     print(filtered_df) -->
+<!--     write_csv(footer, file="output_data/summary_of_findings/SR_SOM_footers.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     write_csv(first_line, file="output_data/summary_of_findings/SR_SOM_col_names.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+
+<!--     # Append to CSV file -->
+<!--     write_csv(filtered_df, file = csv_file, append = TRUE, col_names = !file.exists(csv_file)) -->
+
+
+<!--     } -->
+
+<!--   else { -->
+
+<!--     filtered_df <- tibble( -->
+<!--       outcome = NA, -->
+<!--       certainty = NA, -->
+<!--       SOM_title = "No Summary of Findings", -->
+<!--       PICO = NA, -->
+<!--       Published = version_data$Published, -->
+<!--       Version = version_data$Version, -->
+<!--       DOI.unique  = version_data$DOI.unique, -->
+<!--       version_stage = version_data$version_stage -->
+<!--     ) -->
+
+<!--     # get first line of table (in 3d row, row 1 and 2 are title and PICO), with DOI and version -->
+<!--     first_line <- data.frame(outcome = "No Summary of Findings") -->
+<!--     first_line$DOI.unique <- version_data$DOI.unique -->
+<!--     first_line$Version <- version_data$Version -->
+
+<!--     # get table footer, with DOI and version -->
+<!--     footer <- data.frame(footer = "No Summary of Findings") -->
+<!--     footer$DOI.unique <- version_data$DOI.unique -->
+<!--     footer$Version <- version_data$Version -->
+
+<!--     print(url) -->
+<!--     print("No SOM table") -->
+<!--     write_csv(footer, file="output_data/summary_of_findings/SR_SOM_footers.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     write_csv(first_line, file="output_data/summary_of_findings/SR_SOM_col_names.csv", append = TRUE, col_names = !file.exists(csv_file)) -->
+
+<!--     # Append to CSV file -->
+<!--     write_csv(filtered_df, file = csv_file, append = TRUE, col_names = !file.exists(csv_file)) -->
+<!--     } -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+
+<!-- ```{r} -->
+
+
+<!-- # Process each version and append the result to the CSV file -->
+<!-- for (version_url in versions_to_process) { -->
+<!--   # Clean the URL by removing the "https://doi.org/" part -->
+<!--   url <- sub("https://doi.org/", "", version_url) -->
+
+<!--   # Construct the full URL for the review version history -->
+<!--   url <- paste0("https://www.cochranelibrary.com/cdsr/doi/", url) -->
+
+<!--   # Get the html code of the webpage page -->
+<!--   doc <- f_get_html_page(url) -->
+
+
+<!--   # Extract the table as an HTML node -->
+<!--   table_node_body <- doc %>% -->
+<!--     html_node("table.summary-of-findings.framed") %>% -->
+<!--     html_node("tbody") -->
+
+<!--   # Extract text from table foot (details about decision to downgrade confidence) -->
+<!--   table_node_foot <- doc %>% -->
+<!--     html_node("table.summary-of-findings.framed") %>% -->
+<!--     html_node("tfoot") %>% -->
+<!--     html_text2() -->
+
+
+<!--  f_clean_SOM_table(table_node, version_url) -->
+
+<!-- } -->
+
+<!-- ``` -->
+
+

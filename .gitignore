@@ -1,0 +1,15 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+
+# back ups
+back_ups_output
+output_data_back_up
+
+/.quarto/
+
+# contents behind paywalls
+output_data/authors_conclusions
+output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv

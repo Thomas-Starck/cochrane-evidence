@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Database Analysis – cochrane-evidence</title>
+<title>Glimpse of downloaded data – Cochrane data</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -114,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">cochrane-evidence</span>
+    <span class="navbar-title">Cochrane data</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -124,21 +124,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Home</span></a>
+    <span class="nav-link">
+<span class="menu-text">Extract Cochrane data</span>
+    </span>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./cochrane_updates.html"> 
-<span class="menu-text">Gather data</span></a>
+    <span class="nav-link">
+<span class="menu-text">Pre-process data</span>
+    </span>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link active" href="./database_analysis.html" aria-current="page"> 
-<span class="menu-text">Analyze data</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-analyses" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Analyses</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-analyses">    
+        <li>
+    <a class="dropdown-item" href="./3_analyses1_glimpse_description.html">
+ <span class="dropdown-text">Glimpse of Metadata</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./3_analyses2_SOF_evidence_updates.html">
+ <span class="dropdown-text">GRADE certainty of evidence</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./3_analyses3_ROB.html">
+ <span class="dropdown-text">Risk of Bias</span></a>
+  </li>  
+    </ul>
+  </li>
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/Thomas-Starck/cochrane-evidence"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -159,14 +176,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#analysis-of-versions" id="toc-analysis-of-versions" class="nav-link active" data-scroll-target="#analysis-of-versions">Analysis of versions</a>
-  <ul class="collapse">
-  <li><a href="#latest-published-version" id="toc-latest-published-version" class="nav-link" data-scroll-target="#latest-published-version">Latest published version</a></li>
-  <li><a href="#time-between-versions-updates" id="toc-time-between-versions-updates" class="nav-link" data-scroll-target="#time-between-versions-updates">Time between versions updates</a></li>
-  </ul></li>
+  <li><a href="#analysis-of-versions" id="toc-analysis-of-versions" class="nav-link active" data-scroll-target="#analysis-of-versions">Analysis of versions</a></li>
   <li><a href="#plain-language-summary" id="toc-plain-language-summary" class="nav-link" data-scroll-target="#plain-language-summary">Plain Language Summary</a></li>
   <li><a href="#summary-of-findings---metadata" id="toc-summary-of-findings---metadata" class="nav-link" data-scroll-target="#summary-of-findings---metadata">Summary of Findings - Metadata</a></li>
-  <li><a href="#summary-of-findings---content" id="toc-summary-of-findings---content" class="nav-link" data-scroll-target="#summary-of-findings---content">Summary of Findings - Content</a></li>
+  <li><a href="#summary-of-findings---content" id="toc-summary-of-findings---content" class="nav-link" data-scroll-target="#summary-of-findings---content">Summary of Findings - Content</a>
+  <ul class="collapse">
+  <li><a href="#prepare" id="toc-prepare" class="nav-link" data-scroll-target="#prepare">prepare</a></li>
+  <li><a href="#evolution-all-categories" id="toc-evolution-all-categories" class="nav-link" data-scroll-target="#evolution-all-categories">evolution all categories</a></li>
+  <li><a href="#evolution-only-certainty" id="toc-evolution-only-certainty" class="nav-link" data-scroll-target="#evolution-only-certainty">evolution only certainty</a></li>
+  <li><a href="#sr-with-at-least-2-versions-with-sof" id="toc-sr-with-at-least-2-versions-with-sof" class="nav-link" data-scroll-target="#sr-with-at-least-2-versions-with-sof">SR with at least 2 versions with SOF</a></li>
+  </ul></li>
+  <li><a href="#abstracts" id="toc-abstracts" class="nav-link" data-scroll-target="#abstracts">Abstracts</a></li>
+  <li><a href="#events-in-versions" id="toc-events-in-versions" class="nav-link" data-scroll-target="#events-in-versions">Events in Versions</a></li>
+  <li><a href="#old-analyses" id="toc-old-analyses" class="nav-link" data-scroll-target="#old-analyses">OLD Analyses</a></li>
   </ul>
 </nav>
     </div>
@@ -175,7 +197,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Database Analysis</h1>
+<h1 class="title">Glimpse of downloaded data</h1>
 </div>
 
 
@@ -192,9 +214,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>IDEE: on peut regarder versions qui ont changé de titre, d’auteurs…</p>
-<p>IDEE: temps entre 1er protocole et 1ere version</p>
-<p>histogramme year of first publication vs histrogramm year of last update</p>
+<!-- IDEE: on peut regarder versions qui ont changé de titre, d'auteurs... -->
+<!-- IDEE: temps entre 1er protocole et 1ere version -->
+<!-- histogramme year of first publication vs histrogramm year of last update -->
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -207,17 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#-loads the core tidyverse package</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork) <span class="co"># for multiple graphs with ggplot</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggbeeswarm)  <span class="co"># For geom_quasirandom</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set theme for graphs</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.grid.major.y =</span> <span class="fu">element_line</span>(), <span class="co">#no vertical lines by default</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">#text = element_text(family = "Times New Roman"), #default font</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face=</span><span class="st">"bold"</span>) <span class="co">#graphs titles in bolds</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggbeeswarm)  <span class="co"># For geom_quasirandom</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
@@ -225,18 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the original downloaded database of cochrane systematic reviews on interventions</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># gives the latest published version of each SR</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>cochrane_dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"source_data/cochrane_data_base_2025_01_22/review_type/SR_Interventions.csv"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># database of all versions, not only the latest one</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>versions <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data/versions/SR_versions.csv"</span>)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># only keep versions that are not protocols</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>versions_without_protocols <span class="ot">&lt;-</span> versions <span class="sc">%&gt;%</span> </span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(version_stage<span class="sc">!=</span><span class="st">"Protocol"</span>)</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># database of all version with also detailed updates events</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>versions_with_events <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data/versions/SR_versions_with_events.csv"</span>)</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>versions_with_events<span class="sc">$</span>Published <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(versions_with_events<span class="sc">$</span>Published, <span class="at">format =</span> <span class="st">"%Y %b %d"</span>) <span class="co"># Transform date string to a date object</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>cochrane_dataset <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"source_data/cochrane_data_base_2025_04_11/SR_Interventions.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="analysis-of-versions" class="level1">
@@ -244,16 +245,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">length</span>(<span class="fu">unique</span>(versions<span class="sc">$</span>DOI.unique)), <span class="st">"unique Systematic Reviews"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">nrow</span>(<span class="fu">unique</span>(versions <span class="sc">%&gt;%</span> <span class="fu">filter</span>(version_stage<span class="sc">==</span><span class="st">"Protocol"</span>))), <span class="st">"Systematic Reviews with a protocol"</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># database of all versions, not only the latest one</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>versions <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data_scrapped/versions/SR_versions.csv"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">nrow</span>(versions), <span class="st">"unique versions (including protocols)"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">nrow</span>(versions_without_protocols), <span class="st">"unique versions (excluding protocols)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># only keep versions that are not protocols</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>versions_without_protocols <span class="ot">&lt;-</span> versions <span class="sc">%&gt;%</span> <span class="fu">filter</span>(version_stage<span class="sc">!=</span><span class="st">"Protocol"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>versions_protocols <span class="ot">&lt;-</span> versions <span class="sc">%&gt;%</span> <span class="fu">filter</span>(version_stage<span class="sc">==</span><span class="st">"Protocol"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">unique</span>(versions<span class="sc">$</span>DOI_unique)), <span class="st">" unique Systematic Reviews</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">unique</span>(versions_protocols<span class="sc">$</span>DOI_unique)), <span class="st">" Systematic Reviews with a protocol</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(versions), <span class="st">" unique versions (including protocols)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nrow</span>(versions_without_protocols), <span class="st">" unique versions (excluding protocols)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep=</span><span class="st">""</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="latest-published-version" class="level2">
-<h2 class="anchored" data-anchor-id="latest-published-version">Latest published version</h2>
-<p>There are almost 9,000 systematic reviews in the database. Of these, for a bit more than half (55%, or 5,000 reviews), the latest version is Version 1. So we can only study the evolution of the certainty of evidence on the remaining ~4,000 reviews, which have at least 2 distinct versions..</p>
+<p>There are 9016 systematic reviews in the database. Of these, for a bit more than half (55%, or 5,000 reviews), the latest version is Version 1. So we can only study the evolution of the certainty of evidence on the remaining ~4,000 reviews, which have at least 2 distinct versions..</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Latest published version</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Time between versions updates</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
@@ -279,25 +292,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/plot_latest_version-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/plot_latest_version-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="time-between-versions-updates" class="level2">
-<h2 class="anchored" data-anchor-id="time-between-versions-updates">Time between versions updates</h2>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p>Here is plotted the distribution of time span before a systematic review update.</p>
 <p>TBD: REGLER PRBLEME DES 0, ET ECRIRE V1 TO V2, V2 TO V3…</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#Calculate duration between consecutive version stages for each DOI.unique</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a> <span class="co">#Calculate duration between consecutive version stages for each DOI_unique</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>versions_duration <span class="ot">&lt;-</span> versions_without_protocols <span class="sc">%&gt;%</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arrange the data by DOI.unique and Published date</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(DOI.unique, Published) <span class="sc">%&gt;%</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group by DOI.unique to calculate version durations per DOI</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(DOI.unique) <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Arrange the data by DOI_unique and Published date</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(DOI_unique, Published) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group by DOI_unique to calculate version durations per DOI</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(DOI_unique) <span class="sc">%&gt;%</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a new column for version stages: lag of 'Stage' and 'Published'</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">previous_version =</span> <span class="fu">lag</span>(version_stage),         <span class="co"># Previous version stage</span></span>
@@ -306,7 +318,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
 <span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter rows where the version is not the first (since no previous version exists for V1)</span></span>
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(previous_version)) <span class="sc">%&gt;%</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(DOI.unique, version_stage, previous_version, duration_years)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(DOI_unique, version_stage, previous_version, duration_years)</span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co"># View the result</span></span>
@@ -346,7 +358,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/plot_time_update-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/plot_time_update-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -387,12 +399,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/plot_time_update_by_version-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/plot_time_update_by_version-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
+</div>
+</div>
+</div>
 </section>
 <section id="plain-language-summary" class="level1">
 <h1>Plain Language Summary</h1>
@@ -401,19 +415,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load scrapped Plain Language Summaries contents</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df_plain_language_summary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data/plain_language_summary/SR_plain_language_summary.csv"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df_plain_language_summary <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data_scrapped/plain_language_summary/SR_plain_language_summary.csv"</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(df_plain_language_summary)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># See reviews versions without a plain language summary</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> df_plain_language_summary <span class="sc">%&gt;%</span></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(plain_languag_summary))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(plain_language_summary))</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(temp)</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Percent reviews without a plain language summary</span></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">nrow</span>(temp)<span class="sc">/</span><span class="fu">nrow</span>(df_plain_language_summary), <span class="dv">1</span>),<span class="st">"% reviews without plain language summary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>There are 609 unique versions (out of a total of 15343, or about 4%) that do not have any plain language summary. Normally, for all these reviews versions the underlying reason should be that they have been withdrawn.</p>
+<p>There are 615 unique versions (out of a total of 15465, or about 4%) that do not have any plain language summary. Normally, for all these reviews versions the underlying reason should be that they have been withdrawn.</p>
 <p>Below is the temporal evolution:</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
@@ -422,7 +436,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>df_plot <span class="ot">&lt;-</span> df_plain_language_summary <span class="sc">%&gt;%</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">year</span>(Published),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">PLS_status =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(plain_languag_summary), <span class="st">"No"</span>, <span class="st">"Yes"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">PLS_status =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(plain_language_summary), <span class="st">"No"</span>, <span class="st">"Yes"</span>)</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, PLS_status) <span class="sc">%&gt;%</span></span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
@@ -459,7 +473,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/unnamed-chunk-3-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-3-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -470,27 +484,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_SOF <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data/summary_of_findings/temporary_tables_html/SR_SOF_section.csv"</span>)</span>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>df_SOF <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data_scrapped/summary_of_findings/temporary_tables_html/SR_SOF_section.csv"</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(df_SOF)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># How many reviews versions without Summary of Findings section</span></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> df_SOF <span class="sc">%&gt;%</span> <span class="fu">filter</span>(SOM_html_string<span class="sc">==</span><span class="st">"No summary of Findings"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> df_SOF <span class="sc">%&gt;%</span> <span class="fu">filter</span>(SOF_html_string<span class="sc">==</span><span class="st">"No summary of Findings"</span>)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(temp)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span><span class="fu">nrow</span>(temp)<span class="sc">/</span><span class="fu">nrow</span>(df_SOF)), <span class="st">"% versions without a Summary of Findings section."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>There are 8818 unique versions (out of a total of 15343, or about 57.5%) that do not have any Summary of Findings section.</p>
+<p>There are 8854 unique versions (out of a total of 15465, or about 57.3%) that do not have any Summary of Findings section.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># No focus on reviews with a Summary of Findings Section</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>versions_with_SOM <span class="ot">&lt;-</span> df_SOF <span class="sc">%&gt;%</span> <span class="fu">filter</span>(SOM_html_string<span class="sc">!=</span><span class="st">"No summary of Findings"</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(versions_with_SOM)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>versions_with_SOF <span class="ot">&lt;-</span> df_SOF <span class="sc">%&gt;%</span> <span class="fu">filter</span>(SOF_html_string<span class="sc">!=</span><span class="st">"No summary of Findings"</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(versions_with_SOF)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Among these reviews with a SoF section, none doe not have an html table (ucomment to see that test is empty)</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># test &lt;- versions_with_SOM %&gt;%</span></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(!grepl("&lt;table", SOM_html_string, ignore.case = TRUE))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># test &lt;- versions_with_SOF %&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(!grepl("&lt;table", SOF_html_string, ignore.case = TRUE))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Below is the evolution through time of the presenece of a Summary of Findings section (the presence of SoF before 2008 shows errors in the historic of versions Publication dates, as Summary of Findings were introduced only in 2008).</p>
@@ -498,9 +512,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare data to see evolution of presence of SoF through time</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df_plot <span class="ot">&lt;-</span> <span class="fu">left_join</span>(versions_without_protocols, df_SOF, <span class="at">by=</span><span class="st">"Version"</span>)  <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>df_plot <span class="ot">&lt;-</span> df_SOF <span class="sc">%&gt;%</span></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">SOF_status =</span> <span class="fu">ifelse</span>(SOM_html_string <span class="sc">==</span> <span class="st">"No summary of Findings"</span>, <span class="st">"No"</span>, <span class="st">"Yes"</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">SOF_status =</span> <span class="fu">ifelse</span>(SOF_html_string <span class="sc">==</span> <span class="st">"No summary of Findings"</span>, <span class="st">"No"</span>, <span class="st">"Yes"</span>),</span>
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">year</span>(Published)</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, SOF_status) <span class="sc">%&gt;%</span></span>
@@ -539,7 +553,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/unnamed-chunk-6-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-6-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -548,8 +562,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> versions_with_SOM <span class="sc">%&gt;%</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">count_nb_tables =</span> <span class="fu">str_count</span>(SOM_html_string, <span class="fu">regex</span>(<span class="st">"&lt;table"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)))</span>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> versions_with_SOF <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">count_nb_tables =</span> <span class="fu">str_count</span>(SOF_html_string, <span class="fu">regex</span>(<span class="st">"&lt;table"</span>, <span class="at">ignore_case =</span> <span class="cn">TRUE</span>)))</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># total nb of tables</span></span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(temp<span class="sc">$</span>count_nb_tables)</span>
@@ -566,7 +580,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/unnamed-chunk-7-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-7-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -578,11 +592,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- -voir si les doublons -->
 <!-- -check the ones which where problematic et refaire trouner en changeant prompt ? -->
 <!-- -version "https://doi.org/10.1002/14651858.CD013303.pub2" 140814 tokens, too big for the 128 000 tokens context -->
+<p>GRAPH NB OF VERSIONS</p>
+<section id="prepare" class="level2">
+<h2 class="anchored" data-anchor-id="prepare">prepare</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and have a quick look at the data extracted from the SOF tables by chatgpt</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>csv_file <span class="ot">&lt;-</span> <span class="st">"output_data/summary_of_findings/SR_SOF_confidence.csv"</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>csv_file <span class="ot">&lt;-</span> <span class="st">"output_data_scrapped/summary_of_findings/SR_SOF_confidence.csv"</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>SOF_tables_content <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(csv_file)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(SOF_tables_content)</span>
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
@@ -634,9 +651,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">"outcome not reported"</span>, </span>
 <span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"very low"</span>, <span class="st">"low"</span>, <span class="st">"moderate"</span>, <span class="st">"high"</span></span>
 <span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(SOF_tables_content)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="evolution-all-categories" class="level2">
+<h2 class="anchored" data-anchor-id="evolution-all-categories">evolution all categories</h2>
 <p>Evolution of the certainty of evidence</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
@@ -660,35 +681,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/unnamed-chunk-9-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-9-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="evolution-only-certainty" class="level2">
+<h2 class="anchored" data-anchor-id="evolution-only-certainty">evolution only certainty</h2>
 <p>Focusing only on when certainty of evidence is reported</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(SOF_tables_content <span class="sc">%&gt;%</span> <span class="fu">filter</span>(certainty_of_evidence <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span>, <span class="st">"very low"</span>))) <span class="sc">+</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(year, <span class="at">fill=</span>certainty_of_evidence), <span class="at">stat=</span><span class="st">"count"</span>) <span class="sc">+</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="st">"number of outcomes"</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(SOF_tables_content <span class="sc">%&gt;%</span> <span class="fu">filter</span>(certainty_of_evidence <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span>, <span class="st">"very low"</span>))) <span class="sc">+</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(year, <span class="at">fill=</span>certainty_of_evidence), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="cn">NULL</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">/</span> g2 <span class="sc">+</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">"collect"</span>) <span class="sc">&amp;</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Certainty of evidence in Cochrane Database of Systematic Reviews"</span>,</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"for outcomes evaluated in the Summary Of Findings tables"</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> SOF_tables_content <span class="sc">%&gt;%</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">filter</span>(certainty_of_evidence <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span>, <span class="st">"very low"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>       <span class="fu">filter</span>(year<span class="sc">&gt;=</span><span class="dv">2010</span> <span class="sc">&amp;</span> year<span class="sc">&lt;</span><span class="dv">2025</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">nrow</span>(temp), <span class="st">"unique outcomes"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">length</span>(temp<span class="sc">$</span>DOI_unique <span class="sc">%&gt;%</span> <span class="fu">unique</span>()), <span class="st">"unique systematic reviews (multiple versions)"</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">length</span>(temp<span class="sc">$</span>Version <span class="sc">%&gt;%</span> <span class="fu">unique</span>()), <span class="st">"unique versions"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(SOF_tables_content <span class="sc">%&gt;%</span> <span class="fu">filter</span>(certainty_of_evidence <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span>, <span class="st">"very low"</span>))) <span class="sc">+</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(year, <span class="at">fill=</span>certainty_of_evidence), <span class="at">stat=</span><span class="st">"count"</span>) <span class="sc">+</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="st">"number of outcomes"</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(SOF_tables_content <span class="sc">%&gt;%</span> <span class="fu">filter</span>(certainty_of_evidence <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span>, <span class="st">"very low"</span>))) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(year, <span class="at">fill=</span>certainty_of_evidence), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="cn">NULL</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">/</span> g2 <span class="sc">+</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">"collect"</span>) <span class="sc">&amp;</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Certainty of evidence in Cochrane Database of Systematic Reviews"</span>,</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"for outcomes evaluated in the Summary Of Findings tables"</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/unnamed-chunk-10-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-10-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -702,30 +734,617 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Version) <span class="sc">%&gt;%</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb_outcomes_version =</span> <span class="fu">n</span>())</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(temp) <span class="sc">+</span></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> certainty_of_evidence, <span class="at">weight =</span> <span class="dv">1</span><span class="sc">/</span>nb_outcomes_version)) <span class="sc">+</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="st">"number of outcomes"</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(temp) <span class="sc">+</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> certainty_of_evidence, <span class="at">weight =</span> <span class="dv">1</span><span class="sc">/</span>nb_outcomes_version), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="cn">NULL</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">/</span> g2 <span class="sc">+</span></span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">"collect"</span>) <span class="sc">&amp;</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Certainty of evidence in Cochrane Database of Systematic Reviews"</span>,</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"for outcomes evaluated in the Summary Of Findings tables"</span></span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># remove the unused factor levels "chatgpt unable to attribute" and "outcome not reported"</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>temp<span class="sc">$</span>certainty_of_evidence <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(temp<span class="sc">$</span>certainty_of_evidence)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(temp) <span class="sc">+</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> certainty_of_evidence, <span class="at">weight =</span> <span class="dv">1</span><span class="sc">/</span>nb_outcomes_version)) <span class="sc">+</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="st">"number of outcomes"</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(temp) <span class="sc">+</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">fill =</span> certainty_of_evidence, <span class="at">weight =</span> <span class="dv">1</span><span class="sc">/</span>nb_outcomes_version), <span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="cn">NULL</span>, <span class="at">fill=</span><span class="st">"outcome</span><span class="sc">\n</span><span class="st">certainty of</span><span class="sc">\n</span><span class="st">evidence"</span>) <span class="sc">+</span></span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">2009</span>, <span class="dv">2025</span>))</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>g1 <span class="sc">/</span> g2 <span class="sc">+</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">"collect"</span>) <span class="sc">&amp;</span></span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Certainty of evidence in Cochrane Database of Systematic Reviews"</span>,</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"for outcomes evaluated in the Summary Of Findings tables"</span></span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="database_analysis_files/figure-html/unnamed-chunk-11-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-11-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="sr-with-at-least-2-versions-with-sof" class="level2">
+<h2 class="anchored" data-anchor-id="sr-with-at-least-2-versions-with-sof">SR with at least 2 versions with SOF</h2>
+<p>1083 SR made of 2452 unique versions, that have at least 2 versions. This makes 23274 unique outcomes</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> SOF_tables_content <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(certainty_of_evidence <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"high"</span>, <span class="st">"moderate"</span>, <span class="st">"low"</span>, <span class="st">"very low"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Version) <span class="sc">%&gt;%</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb_outcomes_version =</span> <span class="fu">n</span>())</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># remove the unused factor levels "chatgpt unable to attribute" and "outcome not reported"</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>temp<span class="sc">$</span>certainty_of_evidence <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(temp<span class="sc">$</span>certainty_of_evidence)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>temp_filtered <span class="ot">&lt;-</span> temp <span class="sc">%&gt;%</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span>  <span class="co"># In case temp is already grouped (e.g., by Version), ungroup it first.</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(DOI_unique) <span class="sc">%&gt;%</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">n_distinct</span>(Version) <span class="sc">&gt;=</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()    <span class="co"># Optionally ungroup after filtering</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(temp_filtered<span class="sc">$</span>DOI_unique))</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(temp_filtered<span class="sc">$</span>Version))</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(temp_filtered)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="abstracts" class="level1">
+<h1>Abstracts</h1>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load scrapped abstracts content</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>df_abstracts <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data_scrapped/abstracts/SR_abstracts_with_sections.csv"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Versions that have been withdrawn n = 157</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>df_abstracts_withdrawn <span class="ot">&lt;-</span> df_abstracts <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Abstract_title <span class="sc">==</span> <span class="st">"Reason for withdrawal from publication"</span>)</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Abstracts without withdrawn sections</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>df_abstracts <span class="ot">&lt;-</span> df_abstracts <span class="sc">%&gt;%</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Abstract_title <span class="sc">!=</span> <span class="st">"Reason for withdrawal from publication"</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>nb_withdrawn_versions <span class="ot">&lt;-</span> <span class="fu">length</span>(df_abstracts_withdrawn<span class="sc">$</span>Version)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>nb_total_versions <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(versions_without_protocols<span class="sc">$</span>Version))</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>perc_withdrawn_versions <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="dv">100</span><span class="sc">*</span>nb_withdrawn_versions<span class="sc">/</span>nb_total_versions, <span class="dv">1</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  nb_withdrawn_versions, <span class="st">" withdrawn versions, out of</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  nb_total_versions, <span class="st">" total versions</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"which makes "</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  perc_withdrawn_versions, <span class="st">"%"</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep=</span><span class="st">""</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>There are 519 versions which have no content because they have been withdraw (identified by the fact that their abstract title is “Reason for withdrawal from publication”), which, out of the total of 15465 versions, which represents 3.4% of the versions.</p>
+<p>Below is detailed the composition of the abstracts in Cochrane systematic reviews.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Sections in Abstracts</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Uncommon Sections</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define known section names and their order</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>known_sections <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Background"</span>, <span class="st">"Objectives"</span>, <span class="st">"Search methods"</span>, <span class="st">"Selection criteria"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Data collection and analysis"</span>, <span class="st">"Main results"</span>, <span class="st">"Authors' conclusions"</span>,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Unnamed Section"</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>df_abstracts_analysis <span class="ot">&lt;-</span> df_abstracts <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. Create a simplified section factor</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">section_simplified =</span> <span class="fu">if_else</span>(Section <span class="sc">%in%</span> known_sections, Section, <span class="st">"Others"</span>),</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">section_simplified =</span> <span class="fu">factor</span>(section_simplified, <span class="at">levels =</span> <span class="fu">c</span>(known_sections, <span class="st">"Others"</span>))</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>nb_versions_without_protocols <span class="ot">&lt;-</span> <span class="fu">nrow</span>(versions_without_protocols)</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>nb_systematic_reviews <span class="ot">&lt;-</span> <span class="fu">nrow</span>(cochrane_dataset)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Count sections, compute percentages, and create custom labels</span></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>section_counts <span class="ot">&lt;-</span> df_abstracts_analysis <span class="sc">%&gt;%</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(section_simplified) <span class="sc">%&gt;%</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">percentage =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> nb_versions_without_protocols, <span class="dv">1</span>),</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">paste0</span>(section_simplified, <span class="st">"</span><span class="sc">\n</span><span class="st">(n="</span>, n, <span class="st">", "</span>, percentage, <span class="st">"%)"</span>)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Join labels back to the main dataset, ensuring correct factor order</span></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>df_abstracts_analysis <span class="ot">&lt;-</span> df_abstracts_analysis <span class="sc">%&gt;%</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(<span class="fu">select</span>(section_counts, section_simplified, label), <span class="at">by =</span> <span class="st">"section_simplified"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">label =</span> <span class="fu">factor</span>(label, <span class="at">levels =</span> section_counts<span class="sc">$</span>label))</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Plot</span></span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>  df_abstracts_analysis <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span>(section_simplified <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Others"</span>, <span class="st">"Unnamed Section"</span>))), </span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="fu">fct_rev</span>(label))</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>  <span class="co">#data about withdrawn versions</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">tibble</span>(</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">x=</span><span class="fu">paste0</span>(<span class="st">"Withdrawn Versions</span><span class="sc">\n</span><span class="st">(n="</span>, nb_withdrawn_versions, <span class="st">", "</span>, perc_withdrawn_versions, <span class="st">"%)"</span>),</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>      <span class="at">y=</span>nb_withdrawn_versions</span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>      ), </span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(x, y), </span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill=</span><span class="st">"darkred"</span></span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>    )<span class="sc">+</span></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> nb_versions_without_protocols, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">16000</span>)) <span class="sc">+</span></span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">geom =</span> <span class="st">"text"</span>, <span class="at">y =</span> nb_versions_without_protocols <span class="sc">-</span> <span class="dv">100</span>, <span class="at">x =</span> <span class="dv">8</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">fontface =</span> <span class="st">"italic"</span>,</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">paste0</span>(nb_versions_without_protocols, <span class="st">" unique versions in total,</span><span class="sc">\n</span><span class="st">from "</span>, nb_systematic_reviews, <span class="st">" unique systematic reviews"</span>)</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>,</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of versions containing the section"</span>,</span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Sections within the versions' Abstracts</span><span class="sc">\n</span><span class="st">(excluding protocols)"</span></span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-14-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>versions_with_unnamed_sections <span class="ot">&lt;-</span>  df_abstracts_analysis <span class="sc">%&gt;%</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(section_simplified<span class="sc">==</span><span class="st">"Unnamed Section"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">unique</span>(versions_with_unnamed_sections<span class="sc">$</span>Version)),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Versions with an 'unnamed' Section"</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>versions_with_other_sections <span class="ot">&lt;-</span>  df_abstracts_analysis <span class="sc">%&gt;%</span> </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(section_simplified<span class="sc">==</span><span class="st">"Others"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">length</span>(<span class="fu">unique</span>(versions_with_other_sections<span class="sc">$</span>Version)),</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Versions with an 'other' Section"</span></span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a><span class="co"># side note: 1 unique Version (https://doi.org/10.1002/14651858.CD001443) whose sections content is empty (no text)</span></span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>temp <span class="ot">&lt;-</span> df_abstracts_analysis <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(Text))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Besides the withdrawn versions, there are a few versions (&lt;0.5 %) with uncommon Sections:</p>
+<ul>
+<li><strong>Unnamed Sections</strong>: 20. These are mostly protcols not correctly intexed (n=15 begin with “There is no abstract. The objectives are as follows:”); for the 5 others, the unnamed section is simply an additional paragraph stating something about past or future review update.</li>
+<li><strong>Other Sections</strong>: 48 Versions. The name of these other sections is detailed in the graph below. These are often variations of the common denominations (e.g.&nbsp;“Reviewers’ conclusions” instead of “Authors’ conclusion”).</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(versions_with_other_sections) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(Section)) <span class="sc">+</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="st">"Number of versions containing the section"</span>,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">title=</span><span class="st">"Uncommon section items"</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-16-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="events-in-versions" class="level1">
+<h1>Events in Versions</h1>
+<p>mettre % de chaque catégories, puis ne plus analyser protocoles</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># database of all version with also detailed updates events</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>versions_with_events <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"output_data_scrapped/versions/SR_versions_with_events.csv"</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>versions_with_events<span class="sc">$</span>Published <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(versions_with_events<span class="sc">$</span>Published, <span class="at">format =</span> <span class="st">"%Y %b %d"</span>) <span class="co"># Transform date string to a date object</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># We exclude protocols from the analysis</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>versions_with_events <span class="ot">&lt;-</span> versions_with_events <span class="sc">%&gt;%</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>(Version <span class="sc">%in%</span> versions_protocols<span class="sc">$</span>Version))</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Possibles values taken by Event</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(versions_with_events<span class="sc">$</span>Event)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(versions_with_events)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>nb_versions <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(versions_with_events))</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(versions_with_events) <span class="sc">+</span></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="fu">aes</span>(<span class="fu">reorder</span>(Event, Event, <span class="at">FUN =</span> length))) <span class="sc">+</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="cn">NULL</span>, <span class="at">y=</span><span class="st">"Versions concerned by Event"</span>) <span class="sc">+</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="fu">vars</span>(Stage))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="3_analyses1_glimpse_description_files/figure-html/unnamed-chunk-18-1.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>(temp <span class="ot">&lt;-</span> versions_with_events <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Event) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">percent_event =</span> <span class="fu">round</span>(<span class="fu">n</span>()<span class="sc">/</span><span class="fu">nrow</span>(versions_with_events)<span class="sc">*</span><span class="dv">100</span>),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">count_event =</span> <span class="fu">n</span>(),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">unique_descriptions =</span> <span class="fu">length</span>(<span class="fu">unique</span>(Description))</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(<span class="fu">desc</span>(count_event))</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="old-analyses" class="level1">
+<h1>OLD Analyses</h1>
+<!-- ```{r} -->
+<!-- f_get_latest_versions <- function(df){ -->
+<!--   df_latest <- df %>% -->
+<!--     # Find the latest version for each DOI_unique -->
+<!--     group_by(DOI_unique) %>% -->
+<!--     arrange(desc(Published), .by_group = TRUE) %>% # Arrange within groups -->
+<!--     slice(1) %>%  # Keep only the latest version -->
+<!--     ungroup() -->
+<!--   return(df_latest) -->
+<!-- } -->
+<!-- f_get_first_versions <- function(df){ -->
+<!--   df_latest <- df %>% -->
+<!--     # Find the latest version for each DOI_unique -->
+<!--     group_by(DOI_unique) %>% -->
+<!--     arrange(Published, .by_group = TRUE) %>% # Arrange within groups -->
+<!--     slice(1) %>%  # Keep only the latest version -->
+<!--     ungroup() -->
+<!--   return(df_latest) -->
+<!-- } -->
+<!-- ``` -->
+<!-- ## Events -->
+<!-- ### Amended -->
+<!-- out of almost 14 000 "Amended" -->
+<!-- many occurences of -->
+<!-- Converted to new review format: about 6500 -->
+<!-- Contact details updated (careful, many different format): almost 2000 -->
+<!-- Withdrawn: gather them, they are in different format -->
+<!-- ```{r} -->
+<!-- # # get doi versions where an event is described as stable -->
+<!-- # amended_doi_versions <- versions_with_events %>% -->
+<!-- #   filter(Event == "Amended" ) %>% -->
+<!-- #   pull(Version) -->
+<!-- # -->
+<!-- # # Associated events. A priori no correlation -->
+<!-- # amended <- versions_with_events %>% filter(Version %in% amended_doi_versions) -->
+<!-- # table(amended$Event) -->
+<!-- # -->
+<!-- # # Descriptions associated with Amended event -->
+<!-- # amended <- versions_with_events %>% -->
+<!-- #   filter(Event == "Amended" ) -->
+<!-- # # more than 4000 unique descriptions out of almost 14 000 Amended -->
+<!-- # length(unique(amended$Description)) -->
+<!-- # nrow(amended) -->
+<!-- # -->
+<!-- # # the most common description items (more than 100 occurence) -->
+<!-- # temp <- amended %>% -->
+<!-- #   select(Description) %>% -->
+<!-- #   group_by(Description) %>% -->
+<!-- #   summarise(count = n()) -->
+<!-- # temp %>% filter(count>100) -->
+<!-- ``` -->
+<!-- ### New search -->
+<!-- 4604 unique descriptions out of 5199 New Search Events -->
+<!-- vérifier les version_date > publisehd_date -->
+<!-- ```{r} -->
+<!-- # # get doi versions where an event is described as stable -->
+<!-- # new_search_doi_versions <- versions_with_events %>% -->
+<!-- #   filter(Event == "New search has been performed" ) %>% -->
+<!-- #   pull(Version) -->
+<!-- # -->
+<!-- # new_search <- versions_with_events %>% filter(Version %in% new_search_doi_versions) -->
+<!-- # table(new_search$Event) -->
+<!-- # -->
+<!-- # # Descriptions associated with New Search event -->
+<!-- # new_search <- versions_with_events %>% -->
+<!-- #   filter(Event == "New search has been performed" ) -->
+<!-- # # more than 4000 unique descriptions out of almost 14 000 Amended -->
+<!-- # length(unique(new_search$Description)) -->
+<!-- # nrow(new_search) -->
+<!-- # -->
+<!-- # # the most common description items (more than 100 occurence) -->
+<!-- # temp <- new_search %>% -->
+<!-- #   select(Description) %>% -->
+<!-- #   group_by(Description) %>% -->
+<!-- #   summarise(count = n()) -->
+<!-- # temp %>% filter(count>9) %>% arrange(desc(count)) -->
+<!-- # -->
+<!-- # # combination with other events -->
+<!-- # temp <- new_search %>% -->
+<!-- #   group_by(Version) %>% -->
+<!-- #   mutate(nb_events = n()) -->
+<!-- # table(temp$nb_events) -->
+<!-- ``` -->
+<!-- ### Declared stable ++ -->
+<!-- 490 unique descriptions out of 906 stable -->
+<!-- les plotter au cours du temps: année de la première fois que déclarée stable, % of total cochrane reviews that are stable -->
+<!-- faire aussi analyse manuelle sur est-ce qu'elles sont restées stables; raison pour lesquelles elles sont stables ? -->
+<!-- Est-ce qu'on peut en identifier + qui sont stables si on regarde que les descriptions avec ctrl F ? -->
+<!-- ```{r} -->
+<!-- # get doi versions where an event is described as stable -->
+<!-- stable_doi_versions <- versions_with_events %>% -->
+<!--   filter(Event == "Review declared as stable" ) %>% -->
+<!--   pull(Version) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- # stable <- versions_with_events %>% filter(Version %in% stable_doi_versions) -->
+<!-- # table(stable$Event) -->
+<!-- # -->
+<!-- # # Unique reviews labelled as stable: 755 -->
+<!-- # length(unique(stable$DOI_unique)) -->
+<!-- # -->
+<!-- # # Descriptions associated with Stable event -->
+<!-- # stable <- versions_with_events %>% -->
+<!-- #   filter(Event == "Review declared as stable" ) -->
+<!-- # # more than 4000 unique descriptions out of almost 14 000 Amended -->
+<!-- # length(unique(stable$Description)) -->
+<!-- # nrow(stable) -->
+<!-- # -->
+<!-- # # the most common description items -->
+<!-- # temp <- stable %>% -->
+<!-- #   select(Description) %>% -->
+<!-- #   group_by(Description) %>% -->
+<!-- #   summarise(count = n()) -->
+<!-- # temp %>% filter(count>9) %>% arrange(desc(count)) -->
+<!-- # -->
+<!-- # # association with other event items -->
+<!-- # temp <- stable %>% -->
+<!-- #   group_by(Version) %>% -->
+<!-- #   mutate(nb_events = n()) -->
+<!-- # table(temp$nb_events) -->
+<!-- ``` -->
+<!-- through time -->
+<!-- ```{r} -->
+<!-- temp <- processed_data %>% -->
+<!--   filter(Version %in% stable_doi_versions) %>% -->
+<!--   f_get_first_versions() -->
+<!-- ggplot(temp) + -->
+<!--   geom_histogram( -->
+<!--     aes(Published, fill=version_stage), -->
+<!--     alpha=.7 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     x="", y="", -->
+<!--     title = "Reviews declared stable", -->
+<!--     subtitle = "year: year of the first version when the review was delcared stable", -->
+<!--     fill= "first stable version\nof the review" -->
+<!--   ) -->
+<!-- ``` -->
+<!-- ## Different reviews versions (protocol and review number) -->
+<!-- ### Versions by years -->
+<!-- #### newly published reviews (V1) by year -->
+<!-- ```{r} -->
+<!-- ggplot(versions %>% filter(version_stage=="V1")) + -->
+<!--   geom_histogram( -->
+<!--     aes(as.integer(format(Published, "%Y"))), alpha=.7 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     x = "", y="", title = "Newly published reviews (version 1)" -->
+<!--     ) -->
+<!-- ``` -->
+<!-- #### latest update of reviews in the database as of 2024 -->
+<!-- ```{r} -->
+<!-- # get only the last published version, based on original database -->
+<!-- DOIs_latest <- unique(cochrane_dataset$DOI) -->
+<!-- temp <- versions %>% filter(Version %in% paste0("https://doi.org/", DOIs_latest)) -->
+<!-- ggplot(temp) + -->
+<!--   geom_histogram( -->
+<!--     aes(as.integer(format(Published, "%Y")), fill = version_stage), -->
+<!--     alpha=.8 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     y="", x="", -->
+<!--     title = "latest update (with version number) of reviews in the database as of 2024" -->
+<!--     ) -->
+<!-- ``` -->
+<!-- possible to see for different years -->
+<!-- ```{r} -->
+<!-- # year_cutoff <- 2020  # Replace this with the year of your choice -->
+<!-- # -->
+<!-- # # Processing Steps -->
+<!-- # temp <- versions %>% -->
+<!-- # -->
+<!-- #   # Remove rows where the "Published" date is above the selected year -->
+<!-- #   filter(format(Published, "%Y") <= year_cutoff) %>% -->
+<!-- # -->
+<!-- #   # Find the latest version for each DOI_unique -->
+<!-- #   f_get_latest_versions() -->
+<!-- # -->
+<!-- # ggplot(temp %>% filter(version_stage != "Protocol")) + -->
+<!-- #   geom_histogram( -->
+<!-- #     aes( -->
+<!-- #       as.integer(format(Published, "%Y")), fill = version_stage -->
+<!-- #       ) -->
+<!-- #     ) + -->
+<!-- #   labs( -->
+<!-- #     y="", x="", -->
+<!-- #     title = paste("latest update (with version number) of reviews in the database as of", year_cutoff) -->
+<!-- #     ) -->
+<!-- # -->
+<!-- # #compared to their study -->
+<!-- # # all updates 2016-2020 -->
+<!-- # nrow(temp %>% filter(format(Published, "%Y") >= 2016)) -->
+<!-- # # exclude V1s -->
+<!-- # nrow(temp %>% filter(format(Published, "%Y") >= 2016, version_stage!="V1")) -->
+<!-- ``` -->
+<!-- ### Protocols -->
+<!-- #### reviews with no protocol -->
+<!-- newly published reviews with no protocol -->
+<!-- ```{r} -->
+<!-- no_protocol <- versions %>% -->
+<!--   group_by(DOI_unique) %>% -->
+<!--   filter(!any(Stage == "Protocol")) %>% -->
+<!--   ungroup() -->
+<!-- length(unique(no_protocol$DOI_unique)) -->
+<!-- # to check -->
+<!-- no_protocol_IDs <- unique(no_protocol$DOI_unique) -->
+<!-- test <- versions %>% filter(DOI_unique %in% no_protocol_IDs) -->
+<!-- #ok, no protocols in version_stage -->
+<!-- #proportion in percent -->
+<!-- round(length(unique(no_protocol$DOI_unique))/length(unique(temp$DOI_unique))*100) -->
+<!-- # new reviews (date of VA) with no protocols -->
+<!-- temp2 <- no_protocol %>% -->
+<!--   filter(version_stage=="V1") %>% -->
+<!--   mutate(protocol = "no protocol") -->
+<!-- length(unique(temp2$DOI_unique)) -->
+<!-- # new reviews (V1) with protocoles -->
+<!-- temp3 <- versions %>% -->
+<!--   filter(!(DOI_unique %in% unique(no_protocol$DOI_unique))) %>% -->
+<!--   filter(version_stage=="V1") %>% -->
+<!--   mutate(protocol = "with a protocol") -->
+<!-- length(unique(temp3$DOI_unique)) -->
+<!-- temp2 <- rbind(temp2, temp3) -->
+<!-- ``` -->
+<!-- absolute -->
+<!-- ```{r} -->
+<!-- ggplot(temp2) + -->
+<!--   geom_histogram( -->
+<!--     aes( -->
+<!--       as.integer(format(Published, "%Y")), fill = protocol -->
+<!--       ), -->
+<!--     alpha = .7 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="newly published reviews (version 1)", -->
+<!--     x="", y="", fill="" -->
+<!--     ) -->
+<!-- table(temp2$protocol) -->
+<!-- ``` -->
+<!-- relative -->
+<!-- ```{r} -->
+<!-- ggplot(temp2) + -->
+<!--   geom_histogram( -->
+<!--     aes( -->
+<!--       as.integer(format(Published, "%Y")), fill = protocol -->
+<!--       ), -->
+<!--     alpha = .7, position = "fill" -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="proportion of newly published reviews (version 1)", -->
+<!--     x="", y="", fill="" -->
+<!--     ) -->
+<!-- ``` -->
+<!-- #### publication of protocols -->
+<!-- (pas complet, ajouter la databse des protocoles !) -->
+<!-- avec cette databse, on a les protocoles qui ont aboutit à une revue -->
+<!-- avec l'autre databse, ça sera les protcoles qui n'ont pas aboutit à une revue -->
+<!-- ```{r} -->
+<!-- ggplot(versions %>% filter(version_stage=="Protocol")) + -->
+<!--   geom_histogram( -->
+<!--     aes(as.integer(format(Published, "%Y"))), alpha=.7 -->
+<!--     ) + -->
+<!--   labs(x = "", y="", title = "newly published protocols") -->
+<!-- ``` -->
+<!-- #### reviews with only a protocol -->
+<!-- should not find any, as there is a special feature in cochrane dsr search ? -->
+<!-- ```{r} -->
+<!-- only_a_protocol <- temp %>% -->
+<!--   group_by(DOI_unique) %>% -->
+<!--   filter( -->
+<!--     any(Stage == "Protocol") & !any(grepl("^V\\d+$", version_stage)) -->
+<!--   ) %>% -->
+<!--   ungroup() -->
+<!-- #proportion in percent -->
+<!-- round( -->
+<!--   length(unique(only_a_protocol$DOI_unique))/length(unique(temp$DOI_unique))*100, -->
+<!--   3 -->
+<!--   ) -->
+<!-- ``` -->
+<!-- ### Evolution of versions -->
+<!-- #### reviews with only a V1 and so no subsequent update -->
+<!-- là il faudrait quand même vérifier les cas où new search > date version -->
+<!-- ```{r} -->
+<!-- only_one_version <- temp %>% -->
+<!--   group_by(DOI_unique) %>% -->
+<!--   filter( -->
+<!--     sum(grepl("^V\\d+$", version_stage)) == 1 &  # Exactly one version labeled as "V1", "V2", etc. -->
+<!--     any(version_stage == "V1")                  # Specifically, there is a "V1" -->
+<!--   ) %>% -->
+<!--   ungroup() -->
+<!-- #proportion in percent -->
+<!-- round(length(unique(only_one_version$DOI_unique))/length(unique(temp$DOI_unique))*100) -->
+<!-- # we remove the "Protocol" stage and only keep "V1 to plot the evolution through time -->
+<!-- ggplot(only_one_version %>% filter(version_stage=="V1")) + -->
+<!--   geom_histogram(aes(as.integer(format(Published, "%Y")))) + -->
+<!--   labs( -->
+<!--     title="nb of reviews with only 1 version", -->
+<!--     x="",y="" -->
+<!--     ) -->
+<!-- ``` -->
+<!-- #### database compostion through time -->
+<!-- ```{r} -->
+<!-- # Define the version hierarchy -->
+<!-- #version_order <- c("Protocol", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8", "V9", "V10") -->
+<!-- # Generate years from 1995 to 2024 -->
+<!-- years <- 1995:2024 -->
+<!-- # Create a new data frame with the cumulative databse for each year -->
+<!-- result <- bind_rows(lapply(years, function(year) { -->
+<!--   versions %>% -->
+<!--     filter(as.integer(format(Published, "%Y")) <= year) %>%  # Filter rows where 'Published' year <= current year -->
+<!--     group_by(DOI_unique) %>% -->
+<!--     arrange(version_stage, .by_group = TRUE) %>%  # Order versions -->
+<!--     slice_tail(n = 1) %>%  # Keep the latest version -->
+<!--     ungroup() %>% -->
+<!--     mutate(year = year) %>%  # Add the current year column -->
+<!--     distinct(DOI_unique, .keep_all = TRUE) -->
+<!-- })) -->
+<!-- ``` -->
+<!-- absolute -->
+<!-- ```{r} -->
+<!-- ggplot(result %>% filter(version_stage != "Protocol")) + -->
+<!--   geom_histogram( -->
+<!--     aes(year, fill=version_stage), alpha=.8 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="Reviews within the database, by version", -->
+<!--     y="", x="", -->
+<!--     fill="latest version\nof review" -->
+<!--     ) -->
+<!-- ``` -->
+<!-- percent -->
+<!-- ```{r} -->
+<!-- ggplot(result %>% filter(version_stage != "Protocol")) + -->
+<!--   geom_histogram( -->
+<!--     aes(year, fill=version_stage), position = "fill", alpha=.8 -->
+<!--     ) + -->
+<!--   labs( -->
+<!--     title="Reviews within the database, by version", -->
+<!--     y="", x="", -->
+<!--     fill="latest version\nof review" -->
+<!--     ) -->
+<!-- table(result %>% filter(year==2024) %>% pull(version_stage)) -->
+<!-- ``` -->
 
 
 </section>
